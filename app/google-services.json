@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "546018031880",
+    "project_id": "team30-project",
+    "storage_bucket": "team30-project.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:546018031880:android:e32aa0b0b6c8032aa8d4bd",
+        "android_client_info": {
+          "package_name": "com.example.team30"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "546018031880-cgos67u6j17he9fn54u1ub8fe56oe8ag.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDrtHBVzE7EHzjH_UIFZTpUTFrfWTayzhc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "546018031880-cgos67u6j17he9fn54u1ub8fe56oe8ag.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
