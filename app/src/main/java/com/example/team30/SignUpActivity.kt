@@ -44,6 +44,11 @@ class SignUpActivity : AppCompatActivity() {
                     Log.w(TAG, "Error adding document", e)
                 }
 
+            // 회원가입 중복 확인.. 추가
+            val docRef = db.collection("users").document(email.toString())
+            Log.d("docRef : ", docRef.toString())
+
+
             // db 추가하고 다시 로그인 페이지로 넘어감
             var intent = Intent(baseContext, LoginActivity::class.java)
             startActivity(intent)
