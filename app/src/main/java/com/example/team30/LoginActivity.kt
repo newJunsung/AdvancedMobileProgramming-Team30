@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import com.example.team30.databinding.ActivityLoginBinding
-import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -55,7 +54,7 @@ class LoginActivity : AppCompatActivity() {
                         // 비밀번호까지 맞으면 로그인 성공
                         if (document.data?.get("password").toString() == password.toString()) {
                             Log.d(TAG, "DocumentSnapshot data: ${document.data}")
-                            intent = Intent(baseContext, FeedActivity::class.java)
+                            intent = Intent(baseContext, SNSActivity::class.java)
                             startActivity(intent) // 로그인 성공하면 피드 페이지로 넘어감
                         } else { // 비밀번호가 틀리면 다시 입력받음
                             email = binding.emailEdit.text
@@ -72,6 +71,5 @@ class LoginActivity : AppCompatActivity() {
                     Log.d(TAG, "get failed with ", exception)
                 }
         }
-
     }
 }
