@@ -1,4 +1,4 @@
-package com.example.team30
+package com.example.team30.login
 
 import android.content.ContentValues.TAG
 import android.content.Intent

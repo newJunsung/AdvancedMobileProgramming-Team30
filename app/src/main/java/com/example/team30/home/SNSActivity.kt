@@ -1,9 +1,13 @@
-package com.example.team30
+package com.example.team30.home
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
+import com.example.team30.R
 import com.example.team30.databinding.ActivitySnsBinding
+import com.example.team30.home.feeds.FeedsFragment
+import com.example.team30.home.friends.FriendsFragment
+import com.example.team30.home.profile.ProfileFragment
 import com.google.android.material.navigation.NavigationBarView
 
 class SNSActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListener {

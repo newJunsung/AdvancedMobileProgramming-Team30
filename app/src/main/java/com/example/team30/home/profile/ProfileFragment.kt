@@ -1,4 +1,4 @@
-package com.example.team30
+package com.example.team30.home.profile
 
 import android.os.Bundle
 import android.util.Log
@@ -6,13 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.example.team30.R
 
-class FriendsFragment: Fragment() {
+class ProfileFragment: Fragment() {
     companion object {
         const val TAG: String = "로그"
 
-        fun newInstance(): FriendsFragment {
-            return FriendsFragment()
+        fun newInstance(): ProfileFragment {
+            return ProfileFragment()
         }
     }
 
@@ -27,6 +28,6 @@ class FriendsFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_friends, container, false)
+        return inflater.inflate(R.layout.fragment_profile, container, false)
     }
 }

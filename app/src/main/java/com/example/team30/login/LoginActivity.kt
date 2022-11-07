@@ -1,4 +1,4 @@
-package com.example.team30
+package com.example.team30.login
 
 import android.content.ContentValues.TAG
 import android.content.DialogInterface
@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AlertDialog
+import com.example.team30.home.SNSActivity
 import com.example.team30.databinding.ActivityLoginBinding
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore

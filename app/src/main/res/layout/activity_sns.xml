@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SNSActivity">
+    tools:context=".home.SNSActivity">
 
     <FrameLayout
         android:id="@+id/fragments_frame"
