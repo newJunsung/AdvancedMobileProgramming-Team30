@@ -1,10 +1,12 @@
 package com.example.team30
 
 import android.content.ContentValues.TAG
+import android.content.DialogInterface
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.appcompat.app.AlertDialog
 import com.example.team30.databinding.ActivityLoginBinding
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
@@ -25,6 +27,16 @@ class LoginActivity : AppCompatActivity() {
         var email = binding.emailEdit.text
         var password = binding.passwordEdit.text
 
+        val alertDialog = AlertDialog.Builder(this)
+            .setTitle("로그인 실패")
+            .setMessage("이메일 또는 비밀번호를 확인해주세요...")
+            .setPositiveButton("확인", object: DialogInterface.OnClickListener {
+                override fun onClick(dialog: DialogInterface?, which: Int) {
+                    Log.d("로그인", "로그인 실패")
+                }
+            })
+            .create()
+
         /*Firebase.auth.signInWithEmailAndPassword("admin@team30.com", "123456")
             .addOnCompleteListener {
                 if (it.isSuccessful) {
@@ -34,6 +46,7 @@ class LoginActivity : AppCompatActivity() {
                     println("########## 실패")
                 }
             }*/
+
         // 회원가입 페이지로 넘어감
         binding.signUpbtn.setOnClickListener {
             var intent = Intent(baseContext, SignUpActivity::class.java)
@@ -61,14 +74,17 @@ class LoginActivity : AppCompatActivity() {
                             password = binding.passwordEdit.text
                             binding.emailEdit.setText("")
                             binding.passwordEdit.setText("")
+                            alertDialog.show()
                         }
 
                     } else { // 이메일이 없는 경우
-                        Log.d(TAG, "No such document")
+//                        Log.d(TAG, "No such document")
+                        alertDialog.show()
                     }
                 }
                 .addOnFailureListener { exception ->
                     Log.d(TAG, "get failed with ", exception)
+
                 }
         }
     }
