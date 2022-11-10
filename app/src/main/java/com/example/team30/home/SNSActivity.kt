@@ -1,13 +1,21 @@
 package com.example.team30.home
 
+import android.Manifest
+import android.content.Intent
+import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
 import android.view.MenuItem
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.example.team30.R
 import com.example.team30.databinding.ActivitySnsBinding
 import com.example.team30.home.feeds.FeedsFragment
 import com.example.team30.home.friends.FriendsFragment
 import com.example.team30.home.profile.ProfileFragment
+import com.example.team30.post.AddPost
 import com.google.android.material.navigation.NavigationBarView
 
 class SNSActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListener {
@@ -45,5 +53,20 @@ class SNSActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListene
         }
 
         return true
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.feed_toolbar, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.toolbar_post -> {
+                intent = Intent(baseContext, AddPost::class.java)
+                startActivity(intent)
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 }
