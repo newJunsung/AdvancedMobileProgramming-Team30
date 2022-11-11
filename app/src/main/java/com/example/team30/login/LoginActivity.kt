@@ -19,6 +19,7 @@ import com.google.firebase.ktx.Firebase
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
     lateinit var db:FirebaseFirestore
+    lateinit var alertDialog: AlertDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,9 +32,9 @@ class LoginActivity : AppCompatActivity() {
         var email = binding.emailEdit.text
         var password = binding.passwordEdit.text
 
-        val alertDialog = AlertDialog.Builder(this)
+        alertDialog = AlertDialog.Builder(this)
             .setTitle("로그인 실패")
-            .setMessage("이메일 또는 비밀번호를 확인해주세요...")
+            .setMessage("이메일 또는 비밀번호를 확인해주세요.")
             .setPositiveButton("확인", object: DialogInterface.OnClickListener {
                 override fun onClick(dialog: DialogInterface?, which: Int) {
                     Log.d("로그인", "로그인 실패")
@@ -106,7 +107,8 @@ class LoginActivity : AppCompatActivity() {
                     finish()
                 } else {
                     Log.w("LoginActivity", "signInWithEmail", it.exception)
-                    Toast.makeText(this, "입력한 정보를 다시 확인해주세요", Toast.LENGTH_SHORT).show()
+                    //Toast.makeText(this, "입력한 정보를 다시 확인해주세요", Toast.LENGTH_SHORT).show()
+                    alertDialog.show()
                 }
             }
     }
