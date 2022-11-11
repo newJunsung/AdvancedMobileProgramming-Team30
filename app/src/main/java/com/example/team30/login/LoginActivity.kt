@@ -6,9 +6,12 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.example.team30.home.SNSActivity
 import com.example.team30.databinding.ActivityLoginBinding
+import com.example.team30.home.feeds.FeedsFragment
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -56,6 +59,9 @@ class LoginActivity : AppCompatActivity() {
 
         // 로그인 버튼 눌러서 로그인
         binding.loginbtn.setOnClickListener {
+            doLogin(email.toString(), password.toString())
+        }
+        /*binding.loginbtn.setOnClickListener {
             // 사용자가 입력한 이메일이 db에 있는지 먼저 확인
             Log.d("email : ", email.toString())
             val docRef = db.collection("users").document(email.toString())
@@ -87,6 +93,21 @@ class LoginActivity : AppCompatActivity() {
                     Log.d(TAG, "get failed with ", exception)
 
                 }
-        }
+        }*/
+    }
+
+    private fun doLogin(userEmail: String, password: String) {
+        Firebase.auth.signInWithEmailAndPassword(userEmail.toString(), password.toString())
+            .addOnCompleteListener(this) {
+                if (it.isSuccessful) {
+                    startActivity(
+                        Intent(this, SNSActivity::class.java)
+                    )
+                    finish()
+                } else {
+                    Log.w("LoginActivity", "signInWithEmail", it.exception)
+                    Toast.makeText(this, "입력한 정보를 다시 확인해주세요", Toast.LENGTH_SHORT).show()
+                }
+            }
     }
 }
