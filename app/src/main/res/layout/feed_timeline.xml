@@ -31,12 +31,15 @@
             android:id="@+id/feed_timeline_favorite_imageview"
             android:src="@drawable/ic_favorite_border"
             android:layout_width="35dp"
-            android:layout_height="35dp"/>
+            android:layout_height="35dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"/>
+
         <ImageView
             android:id="@+id/feed_timeline_comment_imageview"
-            android:src="@drawable/ic_chat_black"
             android:layout_width="35dp"
-            android:layout_height="35dp"/>
+            android:layout_height="35dp"
+            android:src="@drawable/ic_chat_black" />
     </LinearLayout>
     <TextView
         android:id="@+id/feed_timeline_favoritecounter_textview"
