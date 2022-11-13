@@ -11,6 +11,7 @@ import androidx.appcompat.app.AlertDialog
 import com.example.team30.home.SNSActivity
 import com.example.team30.databinding.ActivityLoginBinding
 import com.example.team30.home.feeds.FeedsFragment
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
@@ -97,6 +98,10 @@ class LoginActivity : AppCompatActivity() {
         }*/
     }
 
+    override fun onStart() {
+        super.onStart()
+    }
+
     private fun doLogin(userEmail: String, password: String) {
         Firebase.auth.signInWithEmailAndPassword(userEmail.toString(), password.toString())
             .addOnCompleteListener(this) {
@@ -111,5 +116,12 @@ class LoginActivity : AppCompatActivity() {
                     alertDialog.show()
                 }
             }
+    }
+
+    fun moveSNSActivity(user: FirebaseUser?) {
+        if (user != null) {
+            startActivity(Intent(this, SNSActivity::class.java))
+        }
+        finish()
     }
 }

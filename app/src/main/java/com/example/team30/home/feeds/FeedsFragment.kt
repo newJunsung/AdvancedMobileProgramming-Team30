@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.team30.R
 import com.example.team30.databinding.FragmentFeedsBinding
+import com.example.team30.home.profile.ProfileFragment
 import com.example.team30.post.model.PostDTO
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -109,6 +110,16 @@ class FeedsFragment: Fragment() {
             } else { // 클릭하지 않은 경우 비어 있는 하트
                 viewholder.findViewById<ImageView>(R.id.feed_timeline_favorite_imageview)
                     .setImageResource(R.drawable.ic_favorite_border)
+            }
+
+            // 프로필 사진을 눌렀을 경우, 해당 사용자의 프로필로 넘어감.
+            viewholder.findViewById<ImageView>(R.id.feed_timeline_profile_image).setOnClickListener {
+                var fragment = ProfileFragment.newInstance()
+                var bundle = Bundle()
+                bundle.putString("destinationUid", PostDTOs[position].uid)
+                bundle.putString("userID", PostDTOs[position].userId)
+                fragment.arguments = bundle
+                activity?.supportFragmentManager?.beginTransaction()?.replace(R.id.fragments_frame, fragment)?.commit()
             }
         }
 

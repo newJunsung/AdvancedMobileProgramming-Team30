@@ -1,5 +1,6 @@
 package com.example.team30.home.profile
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -13,7 +14,10 @@ import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.example.team30.R
+import com.example.team30.home.SNSActivity
+import com.example.team30.login.LoginActivity
 import com.example.team30.post.model.PostDTO
+import kotlinx.android.synthetic.main.activity_sns.*
 import kotlinx.android.synthetic.main.fragment_profile.view.*
 
 class ProfileFragment: Fragment() {
@@ -21,6 +25,7 @@ class ProfileFragment: Fragment() {
     var firestore: FirebaseFirestore? = null
     var uid: String? = null
     var auth: FirebaseAuth? = null
+    var currentUserUid: String? = null
 
     companion object {
         const val TAG: String = "프로필"
@@ -41,10 +46,30 @@ class ProfileFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         fragmentView = LayoutInflater.from(activity).inflate(R.layout.fragment_profile, container, false)
-        uid = arguments?.getString("destinationUid")
-        Log.d(TAG, "${uid}")
         firestore = FirebaseFirestore.getInstance()
         auth = FirebaseAuth.getInstance()
+
+        uid = arguments?.getString("destinationUid")
+        currentUserUid = auth?.currentUser?.uid
+        if (currentUserUid == uid) {
+            fragmentView?.logout_follow_button?.text = "LOG OUT"
+            fragmentView?.logout_follow_button?.setOnClickListener {
+                activity?.finish()
+                startActivity(Intent(activity, LoginActivity::class.java))
+                auth?.signOut()
+            }
+        } else {
+            fragmentView?.logout_follow_button?.text = "FOLLOW"
+            var snsActivity = (activity as SNSActivity)
+            snsActivity.toolbar_logo?.visibility = View.GONE
+            snsActivity.toolbar_user_id?.visibility = View.VISIBLE
+            snsActivity.toolbar_user_id?.text = arguments?.getString("userID")
+            snsActivity.toolbar_back_button?.visibility = View.VISIBLE
+            snsActivity.toolbar_back_button?.setOnClickListener {
+                snsActivity.bottom_tab_bar.selectedItemId = R.id.tab_bar_feeds
+            }
+
+        }
 
         fragmentView?.user_recyclerview?.adapter = ProfileRecyclerViewAdapter()
         fragmentView?.user_recyclerview?.layoutManager = GridLayoutManager(activity, 3)
