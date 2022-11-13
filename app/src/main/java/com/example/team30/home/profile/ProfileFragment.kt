@@ -1,11 +1,14 @@
 package com.example.team30.home.profile
 
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import androidx.appcompat.widget.LinearLayoutCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,6 +19,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.example.team30.R
 import com.example.team30.home.SNSActivity
 import com.example.team30.login.LoginActivity
+import com.example.team30.post.model.FollowDTO
 import com.example.team30.post.model.PostDTO
 import kotlinx.android.synthetic.main.activity_sns.*
 import kotlinx.android.synthetic.main.fragment_profile.view.*
@@ -53,14 +57,14 @@ class ProfileFragment: Fragment() {
         // 자신의 프로필로 들어오면 로그아웃 할 수 있도록, 상대의 프로필로 들어오면 팔로우를 누를 수 있음.
         uid = arguments?.getString("destinationUid")
         currentUserUid = auth?.currentUser?.uid
-        if (currentUserUid == uid) {
+        if (currentUserUid == uid) { //자신의 프로필
             fragmentView?.logout_follow_button?.text = "LOG OUT"
             fragmentView?.logout_follow_button?.setOnClickListener {
                 activity?.finish()
                 startActivity(Intent(activity, LoginActivity::class.java))
                 auth?.signOut()
             }
-        } else {
+        } else {//상대의 프로필
             fragmentView?.logout_follow_button?.text = "FOLLOW"
             var snsActivity = (activity as SNSActivity)
             snsActivity.toolbar_logo?.visibility = View.GONE
@@ -70,7 +74,9 @@ class ProfileFragment: Fragment() {
             snsActivity.toolbar_back_button?.setOnClickListener {
                 snsActivity.bottom_tab_bar.selectedItemId = R.id.tab_bar_feeds
             }
-
+            fragmentView?.logout_follow_button?.setOnClickListener {
+                requestFollow()
+            }
         }
 
         fragmentView?.user_recyclerview?.adapter = ProfileRecyclerViewAdapter()
@@ -81,7 +87,82 @@ class ProfileFragment: Fragment() {
             activity?.startActivityForResult(photoPickerIntent, PICK_PROFILE_FROM_ALBUM)
         }
         getProfileImage()
+        getFollowerAndFollowing()
         return fragmentView
+    }
+
+    // 팔로우하는 기능
+    fun requestFollow() {
+        // 내가 팔로잉 당할때
+        var tsDocFollowing = firestore?.collection("users")?.document(currentUserUid!!)
+        firestore?.runTransaction { transaction ->
+            var followDTO = transaction.get(tsDocFollowing!!).toObject(FollowDTO::class.java)
+            if(followDTO == null){
+                followDTO = FollowDTO()
+                followDTO!!.followingCount = 1
+                followDTO!!.followings[uid!!] = true
+
+                transaction.set(tsDocFollowing,followDTO!!)
+                return@runTransaction
+            }
+
+            if(followDTO.followings.containsKey(uid)){
+                followDTO?.followingCount = followDTO?.followingCount!!.minus(1)
+                followDTO?.followings?.remove(uid)
+            }else{
+                followDTO?.followingCount = followDTO?.followingCount!!.plus(1)
+                followDTO?.followings?.set(uid!!, true)
+            }
+            transaction.set(tsDocFollowing,followDTO)
+            return@runTransaction
+        }
+
+        //내가 팔로우 할 때
+        var tsDocFollower = firestore?.collection("users")?.document(uid!!)
+        firestore?.runTransaction { transaction ->
+            var followDTO = transaction.get(tsDocFollower!!).toObject(FollowDTO::class.java)
+            if(followDTO == null){
+                followDTO = FollowDTO()
+                followDTO!!.followerCount = 1
+                followDTO!!.followers[currentUserUid!!] = true
+                transaction.set(tsDocFollower,followDTO!!)
+                return@runTransaction
+            }
+
+            if(followDTO!!.followers.containsKey(currentUserUid!!)){
+                followDTO!!.followerCount = followDTO!!.followerCount - 1
+                followDTO!!.followers.remove(currentUserUid!!)
+            }else{
+                followDTO!!.followerCount = followDTO!!.followerCount + 1
+                followDTO!!.followers[currentUserUid!!] = true
+            }
+            transaction.set(tsDocFollower,followDTO!!)
+            return@runTransaction
+        }
+    }
+
+    fun getFollowerAndFollowing(){
+            firestore?.collection("users")?.document(uid!!)?.addSnapshotListener { documentSnapshot, firebaseFirestoreException ->
+                if(documentSnapshot == null) return@addSnapshotListener
+                var followDTO = documentSnapshot.toObject(FollowDTO::class.java)
+                if(followDTO?.followingCount != null){
+                    fragmentView?.user_following_count?.text = followDTO?.followingCount?.toString()
+                }
+                if(followDTO?.followerCount != null){
+                    fragmentView?.user_follower_count?.text = followDTO?.followerCount?.toString()
+                    if(followDTO?.followers?.containsKey(currentUserUid!!) == true){
+                        fragmentView?.logout_follow_button?.text = "CANCEL"
+                        fragmentView?.logout_follow_button?.background
+                            ?.setColorFilter(ContextCompat.getColor(requireActivity(),R.color.gray),PorterDuff.Mode.MULTIPLY)
+                    }else{
+                        if(uid != currentUserUid){
+                            fragmentView?.logout_follow_button?.text = "FOLLOW"
+                            fragmentView?.logout_follow_button?.background?.colorFilter = null
+                        }
+
+                    }
+                }
+        }
     }
 
     // firebase 내에 저장된 profileImages에서 사용자의 프로필 사진 가져오기
