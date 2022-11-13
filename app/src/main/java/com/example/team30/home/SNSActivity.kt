@@ -1,5 +1,6 @@
 package com.example.team30.home
 
+import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -12,8 +13,12 @@ import com.example.team30.home.feeds.FeedsFragment
 import com.example.team30.home.friends.FriendsFragment
 import com.example.team30.home.profile.ProfileFragment
 import com.example.team30.post.AddPost
+import com.google.android.gms.tasks.Task
 import com.google.android.material.navigation.NavigationBarView
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.UploadTask
 import kotlinx.android.synthetic.main.activity_sns.*
 import kotlinx.android.synthetic.main.activity_sns.view.*
 
@@ -79,5 +84,22 @@ class SNSActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListene
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if(requestCode == ProfileFragment.PICK_PROFILE_FROM_ALBUM && resultCode == Activity.RESULT_OK) {
+            var imageUri = data?.data
+            var uid = FirebaseAuth.getInstance().currentUser?.uid
+            var storageRef = FirebaseStorage.getInstance().reference.child("userProfileImages").child(uid!!)
+            storageRef.putFile(imageUri!!).continueWithTask { task: Task<UploadTask.TaskSnapshot> ->
+                return@continueWithTask storageRef.downloadUrl
+            }.addOnSuccessListener {
+                var map = HashMap<String, Any>()
+                map["image"] = it.toString()
+                FirebaseFirestore.getInstance().collection("profileImages").document(uid).set(map)
+            }
+        }
     }
 }

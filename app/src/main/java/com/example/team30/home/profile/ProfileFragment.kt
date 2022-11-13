@@ -29,6 +29,7 @@ class ProfileFragment: Fragment() {
 
     companion object {
         const val TAG: String = "프로필"
+        var PICK_PROFILE_FROM_ALBUM = 10
 
         fun newInstance(): ProfileFragment {
             return ProfileFragment()
@@ -49,6 +50,7 @@ class ProfileFragment: Fragment() {
         firestore = FirebaseFirestore.getInstance()
         auth = FirebaseAuth.getInstance()
 
+        // 자신의 프로필로 들어오면 로그아웃 할 수 있도록, 상대의 프로필로 들어오면 팔로우를 누를 수 있음.
         uid = arguments?.getString("destinationUid")
         currentUserUid = auth?.currentUser?.uid
         if (currentUserUid == uid) {
@@ -73,7 +75,24 @@ class ProfileFragment: Fragment() {
 
         fragmentView?.user_recyclerview?.adapter = ProfileRecyclerViewAdapter()
         fragmentView?.user_recyclerview?.layoutManager = GridLayoutManager(activity, 3)
+        fragmentView?.user_profile?.setOnClickListener { // 프로필 사진을 누르면 프로필 사진을 수정 가능.
+            var photoPickerIntent = Intent(Intent.ACTION_PICK)
+            photoPickerIntent.type = "image/*"
+            activity?.startActivityForResult(photoPickerIntent, PICK_PROFILE_FROM_ALBUM)
+        }
+        getProfileImage()
         return fragmentView
+    }
+
+    // firebase 내에 저장된 profileImages에서 사용자의 프로필 사진 가져오기
+    fun getProfileImage() {
+        firestore?.collection("profileImages")?.document(uid!!)?.addSnapshotListener { value, error ->
+            if(value == null) return@addSnapshotListener
+            if(value.data != null) {
+                var url = value?.data!!["image"]
+                Glide.with(requireActivity()).load(url).apply(RequestOptions().circleCrop()).into(fragmentView?.user_profile!!)
+            }
+        }
     }
 
     inner class ProfileRecyclerViewAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
