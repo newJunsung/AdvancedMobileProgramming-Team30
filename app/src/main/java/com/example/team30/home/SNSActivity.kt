@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import com.example.team30.R
 import com.example.team30.databinding.ActivitySnsBinding
 import com.example.team30.home.feeds.FeedsFragment
@@ -13,6 +14,8 @@ import com.example.team30.home.profile.ProfileFragment
 import com.example.team30.post.AddPost
 import com.google.android.material.navigation.NavigationBarView
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.android.synthetic.main.activity_sns.*
+import kotlinx.android.synthetic.main.activity_sns.view.*
 
 class SNSActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListener {
     private lateinit var binding: ActivitySnsBinding
@@ -27,12 +30,14 @@ class SNSActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListene
         setContentView(binding.root)
 
         binding.bottomTabBar.setOnItemSelectedListener(this)
+        setDefaultToolbar()
         feedsFragment = FeedsFragment.newInstance()
         supportFragmentManager.beginTransaction().add(R.id.fragments_frame, feedsFragment).commit()
     }
 
     // 탭바를 선택하면 해당 fragment로 이동
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        setDefaultToolbar()
         when (item.itemId) {
             R.id.tab_bar_feeds -> {
                 feedsFragment = FeedsFragment.newInstance()
@@ -53,6 +58,12 @@ class SNSActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListene
         }
 
         return true
+    }
+
+    fun setDefaultToolbar() {
+        toolbar_back_button.visibility = View.GONE
+        toolbar_user_id.visibility = View.GONE
+        toolbar_logo.visibility = View.VISIBLE
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

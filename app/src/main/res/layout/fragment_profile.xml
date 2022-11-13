@@ -12,7 +12,7 @@
             android:layout_width="100dp"
             android:layout_height="100dp" />
         <Button
-            android:id="@+id/follow_button"
+            android:id="@+id/logout_follow_button"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_alignParentBottom="true"
@@ -24,7 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_toEndOf="@id/user_profile"
-            android:layout_above="@id/follow_button">
+            android:layout_above="@id/logout_follow_button">
 
             <LinearLayout
                 android:layout_width="0dp"
