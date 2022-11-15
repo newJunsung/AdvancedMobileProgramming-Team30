@@ -1,5 +1,6 @@
 package com.example.team30.home.feeds
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -12,6 +13,7 @@ import com.bumptech.glide.Glide
 import com.example.team30.R
 import com.example.team30.databinding.FragmentFeedsBinding
 import com.example.team30.home.profile.ProfileFragment
+import com.example.team30.post.CommentActivity
 import com.example.team30.post.model.PostDTO
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -120,6 +122,12 @@ class FeedsFragment: Fragment() {
                 bundle.putString("userID", PostDTOs[position].userId)
                 fragment.arguments = bundle
                 activity?.supportFragmentManager?.beginTransaction()?.replace(R.id.fragments_frame, fragment)?.commit()
+            }
+
+            viewholder.findViewById<ImageView>(R.id.feed_timeline_comment_imageview).setOnClickListener {
+                var intent = Intent(it.context, CommentActivity::class.java)
+                intent.putExtra("contentUid", PostUidList[position])
+                startActivity(intent)
             }
         }
 

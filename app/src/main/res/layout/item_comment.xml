@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/item_comment_profile_imageview"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_margin="7.5dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/item_comment_profile_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="7.5dp"
+        android:text="UserID"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/item_comment_profile_imageview"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/item_comment_message_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="7.5dp"
+        android:text="Message"
+        app:layout_constraintStart_toEndOf="@+id/item_comment_profile_imageview"
+        app:layout_constraintTop_toBottomOf="@+id/item_comment_profile_textview" />
+</LinearLayout>
