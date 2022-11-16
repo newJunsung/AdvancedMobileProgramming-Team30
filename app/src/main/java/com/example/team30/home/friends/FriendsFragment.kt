@@ -65,13 +65,14 @@ class FriendsFragment: Fragment() {
                         if (item != null) {
                             followDTOs.add(item)
                         }
+                        //Log.d("followDTOs: ", followDTOs.get(0).toString())
                         followUidList.add(snapshot.id) // 일단 다 담고
                     }
                     notifyDataSetChanged() // 값 새로고침
             }
 
             // followers 가 null 인 uid 를 followUidList 에서 제거
-            FirebaseFirestore.getInstance().collection("users").whereEqualTo("followingCount", 0)
+            FirebaseFirestore.getInstance().collection("users").whereEqualTo("followCount", 0)
                 .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
                     for (snapshot in querySnapshot!!.documents) {
                         var item = snapshot.toObject(FollowDTO::class.java)
@@ -104,12 +105,15 @@ class FriendsFragment: Fragment() {
                 }
 
             // followUidList 출력해보기
-            for (item in followUidList) {
-                Log.d("followUidList: ", item)
+            for (item in followDTOs) {
+                Log.d("followUidList: ", item.userId.toString())
             }
 
-            if (followDTOs!![position].followings.containsKey(uid)) { // 사용자를 팔로우하고 있으면
-                view.item_follow_profile_textview.text = followDTOs[position].userId
+            if (followDTOs!![position].followers.containsKey(uid)) { // 사용자를 팔로우하고 있으면
+                //view.item_follow_profile_textview.text = followDTOs[position].userId.toString() // 안됨..ㅠ
+                view.item_follow_profile_textview.text = followUidList[position]
+
+                Log.d("userId: ", followDTOs[position].userId.toString())
             }
         }
 

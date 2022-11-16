@@ -22,6 +22,9 @@ import com.example.team30.login.LoginActivity
 import com.example.team30.post.model.AlarmDTO
 import com.example.team30.post.model.FollowDTO
 import com.example.team30.post.model.PostDTO
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_sns.*
 import kotlinx.android.synthetic.main.fragment_profile.view.*
 
@@ -97,12 +100,11 @@ class ProfileFragment: Fragment() {
         // 내가 팔로잉 당할때
         var tsDocFollowing = firestore?.collection("users")?.document(currentUserUid!!)
         firestore?.runTransaction { transaction ->
-            var followDTO = transaction.get(tsDocFollowing!!).toObject(FollowDTO::class.java)
+            var followDTO = transaction.get(tsDocFollowing!!).toObject(FollowDTO::class.java)!!
             if(followDTO == null){
                 followDTO = FollowDTO()
                 followDTO!!.followingCount = 1
                 followDTO!!.followings[uid!!] = true
-
                 transaction.set(tsDocFollowing,followDTO!!)
                 return@runTransaction
             }
@@ -110,6 +112,7 @@ class ProfileFragment: Fragment() {
             if(followDTO.followings.containsKey(uid)){
                 followDTO?.followingCount = followDTO?.followingCount!!.minus(1)
                 followDTO?.followings?.remove(uid)
+
             }else{
                 followDTO?.followingCount = followDTO?.followingCount!!.plus(1)
                 followDTO?.followings?.set(uid!!, true)
@@ -126,7 +129,7 @@ class ProfileFragment: Fragment() {
                 followDTO = FollowDTO()
                 followDTO!!.followerCount = 1
                 followDTO!!.followers[currentUserUid!!] = true
-                followDTO!!.userId = FirebaseAuth.getInstance().currentUser?.email
+
                 followerAlarm(uid!!) // 최초로 누가 팔로우하면 알람이 간다.
                 transaction.set(tsDocFollower,followDTO!!)
                 return@runTransaction
@@ -135,6 +138,7 @@ class ProfileFragment: Fragment() {
             if(followDTO!!.followers.containsKey(currentUserUid!!)){
                 followDTO!!.followerCount = followDTO!!.followerCount - 1
                 followDTO!!.followers.remove(currentUserUid!!)
+
             }else{
                 followDTO!!.followerCount = followDTO!!.followerCount + 1
                 followDTO!!.followers[currentUserUid!!] = true
@@ -142,6 +146,7 @@ class ProfileFragment: Fragment() {
                 // 팔로우 카운트 올라가면 알람이 간다.
                 followerAlarm(uid!!)
             }
+
             transaction.set(tsDocFollower,followDTO!!)
             return@runTransaction
         }
