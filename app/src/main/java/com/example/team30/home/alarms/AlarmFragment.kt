@@ -87,12 +87,12 @@ class AlarmFragment : Fragment() {
                     view.item_comment_profile_textview.text = str_0
                 }
                 1 -> { // 댓글
-                    val str_1 = alarmDTOList[position].userId + getString(R.string.alarm_comment) // 댓글 달렸다는 코멘트 달아준다.
-                    view.item_comment_profile_textview.text = str_1
+                    val str_0 = alarmDTOList[position].userId + getString(R.string.alarm_comment) // 댓글 달렸다는 코멘트 달아준다.
+                    view.item_comment_profile_textview.text = str_0
                 }
                 2 -> { // 팔로우
-                    val str_2 = alarmDTOList[position].userId + getString(R.string.alarm_follow) // 팔로우 했다는 코멘트 달아준다.
-                    view.item_comment_profile_textview.text = str_2
+                    val str_0 = alarmDTOList[position].userId + getString(R.string.alarm_follow) // 팔로우 했다는 코멘트 달아준다.
+                    view.item_comment_profile_textview.text = str_0
                 }
             }
             view.item_comment_message_textview.visibility = View.INVISIBLE
