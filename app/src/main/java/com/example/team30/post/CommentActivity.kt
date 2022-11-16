@@ -12,7 +12,9 @@ import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.team30.R
+import com.example.team30.post.model.AlarmDTO
 import com.example.team30.post.model.PostDTO
+import com.google.api.Billing.BillingDestination
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
@@ -23,6 +25,7 @@ import kotlinx.android.synthetic.main.item_comment.view.*
 
 class CommentActivity : AppCompatActivity() {
     var postUid: String? = null
+    var destinationUid: String? = null
 
     lateinit var db: FirebaseFirestore
 
@@ -36,6 +39,7 @@ class CommentActivity : AppCompatActivity() {
         comment_recyclerview.layoutManager = LinearLayoutManager(this)
 
         postUid = intent.getStringExtra("contentUid")
+        destinationUid = intent.getStringExtra("destinationUid")
 
         comment_send_btn.setOnClickListener {
             var comment = PostDTO.Comment()
@@ -46,8 +50,20 @@ class CommentActivity : AppCompatActivity() {
 
             db.collection("posts").document(postUid!!).collection("comments").document().set(comment)
 
+            commentAlarm(destinationUid!!, comment_message_edittext.text.toString()) // 댓글 달 때 알람 간다.
             comment_message_edittext.setText("")
         }
+    }
+
+    // 댓글을 달았을 때 알람이 간다.
+    fun commentAlarm(destinationUid: String, message: String) {
+        var alarmDTO = AlarmDTO()
+        alarmDTO.destinationUid = destinationUid
+        alarmDTO.userId = FirebaseAuth.getInstance().currentUser?.email
+        alarmDTO.uid = FirebaseAuth.getInstance().currentUser?.uid
+        alarmDTO.timestamp = System.currentTimeMillis()
+        alarmDTO.message = message
+        db.collection("alarms").document().set(alarmDTO)
     }
 
     inner class CommentRecyclerViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {

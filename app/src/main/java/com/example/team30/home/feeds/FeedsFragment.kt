@@ -14,6 +14,7 @@ import com.example.team30.R
 import com.example.team30.databinding.FragmentFeedsBinding
 import com.example.team30.home.profile.ProfileFragment
 import com.example.team30.post.CommentActivity
+import com.example.team30.post.model.AlarmDTO
 import com.example.team30.post.model.PostDTO
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -52,22 +53,22 @@ class FeedsFragment: Fragment() {
     }
 
     inner class FeedsRecyclerViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-        var PostDTOs : ArrayList<PostDTO> = arrayListOf() // PostDTO 담아두는 arraylist
-        var PostUidList : ArrayList<String> = arrayListOf() // uid 담아두는 arraylist
+        var postDTOs : ArrayList<PostDTO> = arrayListOf() // PostDTO 담아두는 arraylist
+        var postUidList : ArrayList<String> = arrayListOf() // uid 담아두는 arraylist
 
         // db에 접근해서 시간순으로 데이터 받아올 수 있는 쿼리
         init {
             firestore?.collection("posts")?.orderBy("timestamp")?.addSnapshotListener {querySnapshot, firebaseFirestoreException ->
                 // 받자마자 값 초기화하고
-                PostDTOs.clear()
-                PostUidList.clear()
+                postDTOs.clear()
+                postUidList.clear()
                 // snapshot 에 넘어오는 데이터 읽기
                 for (snapshot in querySnapshot!!.documents) {
                     var item = snapshot.toObject(PostDTO::class.java)
                     if (item != null) {
-                        PostDTOs.add(item)
+                        postDTOs.add(item)
                     }
-                    PostUidList.add(snapshot.id)
+                    postUidList.add(snapshot.id)
                 }
                 notifyDataSetChanged() // 값 새로고침
             }
@@ -85,20 +86,20 @@ class FeedsFragment: Fragment() {
             var viewholder = (holder as CustomViewHolder).itemView
 
             // UserId
-            viewholder.findViewById<TextView>(R.id.feed_timeline_profile_textview).text = PostDTOs[position].userId
+            viewholder.findViewById<TextView>(R.id.feed_timeline_profile_textview).text = postDTOs[position].userId
 
             // Image
-            Glide.with(holder.itemView.context).load(PostDTOs[position].imageUrl)
+            Glide.with(holder.itemView.context).load(postDTOs[position].imageUrl)
                 .into(viewholder.findViewById(R.id.feed_timeline_imageview_content))
 
             // Explain of content
-            viewholder.findViewById<TextView>(R.id.feed_timeline_description_textview).text = PostDTOs!![position].description
+            viewholder.findViewById<TextView>(R.id.feed_timeline_description_textview).text = postDTOs!![position].description
 
             // likes
-            viewholder.findViewById<TextView>(R.id.feed_timeline_favoritecounter_textview).text = "Likes " + PostDTOs!![position].favoriteCount
+            viewholder.findViewById<TextView>(R.id.feed_timeline_favoritecounter_textview).text = "Likes " + postDTOs!![position].favoriteCount
 
             // ProfileImage
-            Glide.with(holder.itemView.context).load(PostDTOs[position].imageUrl)
+            Glide.with(holder.itemView.context).load(postDTOs[position].imageUrl)
                 .into(viewholder.findViewById(R.id.feed_timeline_profile_image))
 
             // '좋아요' 버튼 클릭 이벤트
@@ -106,7 +107,7 @@ class FeedsFragment: Fragment() {
                 favoriteClickEvent(position)
             }
 
-            if (PostDTOs!![position].favorites.containsKey(uid)) { // 클릭한 경우 하트 이미지
+            if (postDTOs!![position].favorites.containsKey(uid)) { // 클릭한 경우 하트 이미지
                 viewholder.findViewById<ImageView>(R.id.feed_timeline_favorite_imageview)
                     .setImageResource(R.drawable.ic_favorite)
             } else { // 클릭하지 않은 경우 비어 있는 하트
@@ -118,15 +119,16 @@ class FeedsFragment: Fragment() {
             viewholder.findViewById<ImageView>(R.id.feed_timeline_profile_image).setOnClickListener {
                 var fragment = ProfileFragment.newInstance()
                 var bundle = Bundle()
-                bundle.putString("destinationUid", PostDTOs[position].uid)
-                bundle.putString("userID", PostDTOs[position].userId)
+                bundle.putString("destinationUid", postDTOs[position].uid)
+                bundle.putString("userID", postDTOs[position].userId)
                 fragment.arguments = bundle
                 activity?.supportFragmentManager?.beginTransaction()?.replace(R.id.fragments_frame, fragment)?.commit()
             }
 
             viewholder.findViewById<ImageView>(R.id.feed_timeline_comment_imageview).setOnClickListener {
                 var intent = Intent(it.context, CommentActivity::class.java)
-                intent.putExtra("contentUid", PostUidList[position])
+                intent.putExtra("contentUid", postUidList[position])
+                intent.putExtra("destinationUid", postDTOs[position].uid)
                 startActivity(intent)
             }
         }
@@ -134,7 +136,7 @@ class FeedsFragment: Fragment() {
         // '좋아요' 클릭하면 카운트를 다시 세팅
         fun favoriteClickEvent(position: Int) {
             // 선택한 컨텐츠의 uid 를 받아와서 넣어준다.
-            var doc = firestore?.collection("posts")?.document(PostUidList[position])
+            var doc = firestore?.collection("posts")?.document(postUidList[position])
             firestore?.runTransaction { transaction ->
                 var postDTO = transaction.get(doc!!).toObject(PostDTO::class.java)
 
@@ -145,13 +147,27 @@ class FeedsFragment: Fragment() {
                 } else { // 클릭되어 있지 않은 경우
                     postDTO?.favoriteCount = postDTO.favoriteCount + 1
                     postDTO.favorites[uid!!] = true // favorites 에 uid 값 추가
+
+                    // 카운터 올라갈 때 알람이 간다.
+                    favoriteAlarm(postDTOs[position].uid!!)
                 }
                 transaction.set(doc, postDTO) // transaction 을 서버로 돌려준다.
             }
         }
 
+        // '좋아요' 버튼 클릭 알람
+        fun favoriteAlarm(destinationUid: String) {
+            var alarmDTO = AlarmDTO()
+            alarmDTO.destinationUid = destinationUid
+            alarmDTO.userId = FirebaseAuth.getInstance().currentUser?.email
+            alarmDTO.uid = FirebaseAuth.getInstance().currentUser?.uid
+            alarmDTO.kind = 0
+            alarmDTO.timestamp = System.currentTimeMillis()
+            FirebaseFirestore.getInstance().collection("alarms").document().set(alarmDTO)
+        }
+
         override fun getItemCount(): Int {
-            return PostDTOs.size // 리사이클러뷰 개수 넘겨주기
+            return postDTOs.size // 리사이클러뷰 개수 넘겨주기
         }
     }
 }

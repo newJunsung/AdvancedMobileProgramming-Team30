@@ -19,6 +19,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.example.team30.R
 import com.example.team30.home.SNSActivity
 import com.example.team30.login.LoginActivity
+import com.example.team30.post.model.AlarmDTO
 import com.example.team30.post.model.FollowDTO
 import com.example.team30.post.model.PostDTO
 import kotlinx.android.synthetic.main.activity_sns.*
@@ -125,6 +126,7 @@ class ProfileFragment: Fragment() {
                 followDTO = FollowDTO()
                 followDTO!!.followerCount = 1
                 followDTO!!.followers[currentUserUid!!] = true
+                followerAlarm(uid!!) // 최초로 누가 팔로우하면 알람이 간다.
                 transaction.set(tsDocFollower,followDTO!!)
                 return@runTransaction
             }
@@ -135,6 +137,9 @@ class ProfileFragment: Fragment() {
             }else{
                 followDTO!!.followerCount = followDTO!!.followerCount + 1
                 followDTO!!.followers[currentUserUid!!] = true
+
+                // 팔로우 카운트 올라가면 알람이 간다.
+                followerAlarm(uid!!)
             }
             transaction.set(tsDocFollower,followDTO!!)
             return@runTransaction
@@ -163,6 +168,17 @@ class ProfileFragment: Fragment() {
                     }
                 }
         }
+    }
+
+    // 팔로우 알람 기능
+    fun followerAlarm(destinationUid: String) {
+        var alarmDTO = AlarmDTO()
+        alarmDTO.destinationUid = destinationUid
+        alarmDTO.userId = auth?.currentUser?.email
+        alarmDTO.uid = auth?.currentUser?.uid
+        alarmDTO.kind = 2
+        alarmDTO.timestamp = System.currentTimeMillis()
+        FirebaseFirestore.getInstance().collection("alarms").document().set(alarmDTO)
     }
 
     // firebase 내에 저장된 profileImages에서 사용자의 프로필 사진 가져오기
