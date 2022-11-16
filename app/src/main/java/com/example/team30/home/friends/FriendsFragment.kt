@@ -73,8 +73,6 @@ class FriendsFragment: Fragment() {
             // followers 가 null 인 uid 를 followUidList 에서 제거
             FirebaseFirestore.getInstance().collection("users").whereEqualTo("followingCount", 0)
                 .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
-                    followDTOs.clear()
-                    followUidList.clear()
                     for (snapshot in querySnapshot!!.documents) {
                         var item = snapshot.toObject(FollowDTO::class.java)
                         if (item != null) {
