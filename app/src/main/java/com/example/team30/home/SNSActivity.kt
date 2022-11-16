@@ -9,6 +9,7 @@ import android.view.MenuItem
 import android.view.View
 import com.example.team30.R
 import com.example.team30.databinding.ActivitySnsBinding
+import com.example.team30.home.alarms.AlarmFragment
 import com.example.team30.home.feeds.FeedsFragment
 import com.example.team30.home.friends.FriendsFragment
 import com.example.team30.home.profile.ProfileFragment
@@ -28,6 +29,7 @@ class SNSActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListene
     private lateinit var feedsFragment: FeedsFragment
     private lateinit var profileFragment: ProfileFragment
     private lateinit var friendsFragment: FriendsFragment
+    private lateinit var alarmfragment: AlarmFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,6 +62,10 @@ class SNSActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListene
                 friendsFragment = FriendsFragment.newInstance()
                 supportFragmentManager.beginTransaction().replace(R.id.fragments_frame, friendsFragment).commit()
             }
+            R.id.tab_bar_alarm -> {
+                alarmfragment = AlarmFragment.newInstance()
+                supportFragmentManager.beginTransaction().replace(R.id.fragments_frame, alarmfragment).commit()
+            }
         }
 
         return true
@@ -78,7 +84,7 @@ class SNSActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListene
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.toolbar_post -> {
+            R.id.toolbar_post -> { // 사진, 글 업로드하는 페이지로 넘어간다.
                 intent = Intent(baseContext, AddPost::class.java)
                 startActivity(intent)
             }

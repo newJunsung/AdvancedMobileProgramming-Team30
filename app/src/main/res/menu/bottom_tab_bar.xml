@@ -11,6 +11,12 @@
         android:icon="@drawable/ic_baseline_account_24"
         />
     <item
+        android:id="@+id/tab_bar_alarm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:icon="@drawable/ic_favorite_border"
+        android:title="피드" />
+    <item
         android:id="@+id/tab_bar_friends"
         android:title="친구"
         android:icon="@drawable/ic_baseline_people_24"
