@@ -126,6 +126,7 @@ class ProfileFragment: Fragment() {
                 followDTO = FollowDTO()
                 followDTO!!.followerCount = 1
                 followDTO!!.followers[currentUserUid!!] = true
+                followDTO!!.userId = FirebaseAuth.getInstance().currentUser?.email
                 followerAlarm(uid!!) // 최초로 누가 팔로우하면 알람이 간다.
                 transaction.set(tsDocFollower,followDTO!!)
                 return@runTransaction

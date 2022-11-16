@@ -5,23 +5,16 @@
     android:layout_height="70dp">
 
     <ImageView
-        android:id="@+id/item_comment_profile_imageview"
+        android:id="@+id/item_follow_profile_imageview"
         android:layout_width="35dp"
         android:layout_height="35dp"
         android:layout_margin="7.5dp" />
 
     <TextView
-        android:id="@+id/item_comment_profile_textview"
+        android:id="@+id/item_follow_profile_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="7.5dp"
         android:text="UserID"
         android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/item_comment_message_textview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="7.5dp"
-        android:text="Message" />
 </LinearLayout>
