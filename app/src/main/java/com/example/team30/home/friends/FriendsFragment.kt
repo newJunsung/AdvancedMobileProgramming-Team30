@@ -15,8 +15,10 @@ import com.example.team30.post.model.FollowDTO
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.fragment_friends.view.*
+import kotlinx.android.synthetic.main.item_comment.view.*
 import kotlinx.android.synthetic.main.item_follow.view.*
 
 class FriendsFragment: Fragment() {
@@ -104,20 +106,30 @@ class FriendsFragment: Fragment() {
             var view = holder.itemView
 
             // db 에서 프로필 이미지 가져오기 (팔로우 하는 uid 만)
-            FirebaseFirestore.getInstance().collection("profileImages").document(followUidList[position]).get()
-                .addOnCompleteListener { task ->
+            Log.d(TAG, followUidList.isEmpty().toString())
+            Log.d(TAG, followUidList.size.toString())
+            Log.d(TAG, followUidList[0])
+            if(followUidList[0] == "") {
+                Log.d(TAG, "없다.")
+            } else {
+                var instance = FirebaseFirestore.getInstance().collection("profileImages")
+                    .document(followUidList[position]).get()
+                instance.addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         val url = task.result!!["image"]
-                        Glide.with(view.context).load(url).apply(RequestOptions().circleCrop()).into(view.item_follow_profile_imageview)
+                        Glide.with(view.context).load(url).apply(RequestOptions().circleCrop())
+                            .into(view.item_follow_profile_imageview)
                     }
                 }
+                view.item_follow_profile_textview.text = followUidList[position]
+            }
 
 //            // followUidList 출력해보기
 //            for (item in followDTOs) {
 //                Log.d("followUidList: ", item.userId.toString())
 //            }
 
-//            if (followDTOs!![position].followers.containsKey(uid)) { // 사용자를 팔로우하고 있으면
+//            if(followDTOs!![position].followers.containsKey(uid)) { // 사용자를 팔로우하고 있으면
 //                //view.item_follow_profile_textview.text = followDTOs[position].userId.toString() // 안됨..ㅠ
 //                view.item_follow_profile_textview.text = followUidList[position]
 //
