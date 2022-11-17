@@ -11,12 +11,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.team30.R
-import com.example.team30.home.feeds.FeedsFragment
 import com.example.team30.post.model.FollowDTO
-import com.example.team30.post.model.PostDTO
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.toObject
+import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.fragment_friends.view.*
 import kotlinx.android.synthetic.main.item_follow.view.*
 
@@ -24,7 +23,7 @@ class FriendsFragment: Fragment() {
     var uid: String? = null
 
     companion object {
-        const val TAG: String = "로그"
+        const val TAG: String = "로그>>>"
 
         fun newInstance(): FriendsFragment {
             return FriendsFragment()
@@ -56,33 +55,42 @@ class FriendsFragment: Fragment() {
 
         // db에 접근해서 followUidList 세팅
         init {
-            FirebaseFirestore.getInstance().collection("users")
+            FirebaseFirestore.getInstance().collection("users").document(FirebaseAuth.getInstance().currentUser?.uid!!)
                 .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
-                    followDTOs.clear()
-                    followUidList.clear()
-                    for (snapshot in querySnapshot!!.documents) {
-                        var item = snapshot.toObject(FollowDTO::class.java)
-                        if (item != null) {
-                            followDTOs.add(item)
-                        }
-                        //Log.d("followDTOs: ", followDTOs.get(0).toString())
-                        followUidList.add(snapshot.id) // 일단 다 담고
+                    Log.d(TAG, querySnapshot.toString())
+//                    followDTOs.clear()
+//                    followUidList.clear()
+//                    for (snapshot in querySnapshot!!.documents) {
+//                        Log.d(TAG, snapshot.toString())
+//                        var item = snapshot.toObject(FollowDTO::class.java)
+//                        if (item != null) {
+//                            followDTOs.add(item)
+//                        }
+//                        //Log.d("followDTOs: ", followDTOs.get(0).toString())
+//                        followUidList.add(snapshot.id) // 일단 다 담고
+//                    }
+
+                    val tempUID = querySnapshot!!.get("followings").toString().split(", ")
+                    tempUID.forEach {
+                        val UID = (it.replace("[{}]".toRegex(), "").split("="))[0]
+                        followUidList.add(UID)
                     }
+                    Log.d(TAG, followUidList.toString())
                     notifyDataSetChanged() // 값 새로고침
             }
 
-            // followers 가 null 인 uid 를 followUidList 에서 제거
-            FirebaseFirestore.getInstance().collection("users").whereEqualTo("followCount", 0)
-                .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
-                    for (snapshot in querySnapshot!!.documents) {
-                        var item = snapshot.toObject(FollowDTO::class.java)
-                        if (item != null) {
-                            followDTOs.remove(item) // follower 없는 데이터 제거
-                       }
-                        followUidList.remove(snapshot.id) // follower 없는 uid 제거
-                    }
-                    notifyDataSetChanged() // 값 새로고침
-                }
+//            // followers 가 null 인 uid 를 followUidList 에서 제거
+//            FirebaseFirestore.getInstance().collection("users").whereEqualTo("followCount", 0)
+//                .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+//                    for (snapshot in querySnapshot!!.documents) {
+//                        var item = snapshot.toObject(FollowDTO::class.java)
+//                        if (item != null) {
+//                            followDTOs.remove(item) // follower 없는 데이터 제거
+//                       }
+//                        followUidList.remove(snapshot.id) // follower 없는 uid 제거
+//                    }
+//                    notifyDataSetChanged() // 값 새로고침
+//                }
 
         }
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -104,17 +112,17 @@ class FriendsFragment: Fragment() {
                     }
                 }
 
-            // followUidList 출력해보기
-            for (item in followDTOs) {
-                Log.d("followUidList: ", item.userId.toString())
-            }
+//            // followUidList 출력해보기
+//            for (item in followDTOs) {
+//                Log.d("followUidList: ", item.userId.toString())
+//            }
 
-            if (followDTOs!![position].followers.containsKey(uid)) { // 사용자를 팔로우하고 있으면
-                //view.item_follow_profile_textview.text = followDTOs[position].userId.toString() // 안됨..ㅠ
-                view.item_follow_profile_textview.text = followUidList[position]
-
-                Log.d("userId: ", followDTOs[position].userId.toString())
-            }
+//            if (followDTOs!![position].followers.containsKey(uid)) { // 사용자를 팔로우하고 있으면
+//                //view.item_follow_profile_textview.text = followDTOs[position].userId.toString() // 안됨..ㅠ
+//                view.item_follow_profile_textview.text = followUidList[position]
+//
+//                Log.d("userId: ", followDTOs[position].userId.toString())
+//            }
         }
 
         override fun getItemCount(): Int {

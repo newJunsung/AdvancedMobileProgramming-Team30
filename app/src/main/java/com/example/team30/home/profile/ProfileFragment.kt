@@ -96,32 +96,35 @@ class ProfileFragment: Fragment() {
     }
 
     // 팔로우하는 기능
-    fun requestFollow() {
-        // 내가 팔로잉 당할때
+    fun requestFollow(){
+        //Save data to my account
         var tsDocFollowing = firestore?.collection("users")?.document(currentUserUid!!)
         firestore?.runTransaction { transaction ->
-            var followDTO = transaction.get(tsDocFollowing!!).toObject(FollowDTO::class.java)!!
+            var followDTO = transaction.get(tsDocFollowing!!).toObject(FollowDTO::class.java)
             if(followDTO == null){
                 followDTO = FollowDTO()
                 followDTO!!.followingCount = 1
                 followDTO!!.followings[uid!!] = true
+
                 transaction.set(tsDocFollowing,followDTO!!)
                 return@runTransaction
             }
 
             if(followDTO.followings.containsKey(uid)){
-                followDTO?.followingCount = followDTO?.followingCount!!.minus(1)
+                //It remove following third person when a third person follow me
+                followDTO?.followingCount = followDTO?.followingCount?.minus(1)!!
                 followDTO?.followings?.remove(uid)
-
             }else{
-                followDTO?.followingCount = followDTO?.followingCount!!.plus(1)
+                //It add following third person when a third person do not follow me
+                followDTO?.followingCount = followDTO?.followingCount?.plus(1)!!
                 followDTO?.followings?.set(uid!!, true)
             }
             transaction.set(tsDocFollowing,followDTO)
             return@runTransaction
         }
 
-        //내가 팔로우 할 때
+        //Save data to third account
+
         var tsDocFollower = firestore?.collection("users")?.document(uid!!)
         firestore?.runTransaction { transaction ->
             var followDTO = transaction.get(tsDocFollower!!).toObject(FollowDTO::class.java)
@@ -129,24 +132,21 @@ class ProfileFragment: Fragment() {
                 followDTO = FollowDTO()
                 followDTO!!.followerCount = 1
                 followDTO!!.followers[currentUserUid!!] = true
-
-                followerAlarm(uid!!) // 최초로 누가 팔로우하면 알람이 간다.
+                followerAlarm(uid!!)
                 transaction.set(tsDocFollower,followDTO!!)
                 return@runTransaction
             }
 
             if(followDTO!!.followers.containsKey(currentUserUid!!)){
+                //It cancel my follower when I follow a third person
                 followDTO!!.followerCount = followDTO!!.followerCount - 1
                 followDTO!!.followers.remove(currentUserUid!!)
-
             }else{
+                //It add my follower when I don't follow a third person
                 followDTO!!.followerCount = followDTO!!.followerCount + 1
                 followDTO!!.followers[currentUserUid!!] = true
-
-                // 팔로우 카운트 올라가면 알람이 간다.
                 followerAlarm(uid!!)
             }
-
             transaction.set(tsDocFollower,followDTO!!)
             return@runTransaction
         }
