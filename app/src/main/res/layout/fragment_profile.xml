@@ -10,13 +10,16 @@
             android:id="@+id/user_profile"
             android:src="@drawable/ic_baseline_account_24"
             android:layout_width="100dp"
-            android:layout_height="100dp" />
+            android:layout_height="100dp"
+            android:padding="7.5dp"/>
         <Button
             android:id="@+id/logout_follow_button"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_alignParentBottom="true"
             android:layout_toEndOf="@id/user_profile"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:text="FOLLOW" />
 
         <LinearLayout
@@ -29,7 +32,7 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:gravity="center"
                 android:layout_weight="1"
                 android:orientation="vertical">
                 <TextView
@@ -47,7 +50,7 @@
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_weight="1"
-                android:layout_gravity="center"
+                android:gravity="center"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content">
                 <TextView
@@ -64,7 +67,7 @@
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_weight="1"
-                android:layout_gravity="center"
+                android:gravity="center"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content">
                 <TextView

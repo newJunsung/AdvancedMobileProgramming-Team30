@@ -18,6 +18,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.fragment_alarm.view.*
 import kotlinx.android.synthetic.main.item_comment.view.*
+import kotlinx.android.synthetic.main.item_follow.view.*
 
 class AlarmFragment : Fragment() {
     companion object {
@@ -62,7 +63,7 @@ class AlarmFragment : Fragment() {
                 }
         }
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-            var view = LayoutInflater.from(parent.context).inflate(R.layout.item_comment, parent, false)
+            var view = LayoutInflater.from(parent.context).inflate(R.layout.item_follow, parent, false)
             return CustomerViewHolder(view)
         }
 
@@ -76,7 +77,8 @@ class AlarmFragment : Fragment() {
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         val url = task.result!!["image"]
-                        Glide.with(view.context).load(url).apply(RequestOptions().circleCrop()).into(view.item_comment_profile_imageview)
+//                        Glide.with(view.context).load(url).apply(RequestOptions().circleCrop()).into(view.item_comment_profile_imageview)
+                        Glide.with(view.context).load(url).apply(RequestOptions().circleCrop()).into(view.item_follow_profile_imageview)
                     }
                 }
 
@@ -84,18 +86,21 @@ class AlarmFragment : Fragment() {
             when(alarmDTOList[position].kind) {
                 0 -> { // '좋아요'
                     val str_0 = alarmDTOList[position].userId + getString(R.string.alarm_favorite) // '좋아요' 눌렀다는 코멘트 달아준다.
-                    view.item_comment_profile_textview.text = str_0
+                    view.item_follow_profile_textview.text = str_0
+//                    view.item_comment_profile_textview.text = str_0
                 }
                 1 -> { // 댓글
                     val str_0 = alarmDTOList[position].userId + getString(R.string.alarm_comment) // 댓글 달렸다는 코멘트 달아준다.
-                    view.item_comment_profile_textview.text = str_0
+                    view.item_follow_profile_textview.text = str_0
+//                    view.item_comment_profile_textview.text = str_0
                 }
                 2 -> { // 팔로우
                     val str_0 = alarmDTOList[position].userId + getString(R.string.alarm_follow) // 팔로우 했다는 코멘트 달아준다.
-                    view.item_comment_profile_textview.text = str_0
+                    view.item_follow_profile_textview.text = str_0
+//                    view.item_comment_profile_textview.text = str_0
                 }
             }
-            view.item_comment_message_textview.visibility = View.INVISIBLE
+            // view.item_comment_message_textview.visibility = View.INVISIBLE
         }
 
         override fun getItemCount(): Int {
