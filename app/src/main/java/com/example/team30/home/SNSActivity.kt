@@ -1,6 +1,9 @@
 package com.example.team30.home
 
 import android.app.Activity
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -40,6 +43,14 @@ class SNSActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListene
         setDefaultToolbar()
         feedsFragment = FeedsFragment.newInstance()
         supportFragmentManager.beginTransaction().add(R.id.fragments_frame, feedsFragment).commit()
+
+        val channel = NotificationChannel(
+            "firebase-messaging", "firebase-messaging channel",
+            NotificationManager.IMPORTANCE_DEFAULT
+        )
+        channel.description = "Test"
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(channel)
     }
 
     // 탭바를 선택하면 해당 fragment로 이동
