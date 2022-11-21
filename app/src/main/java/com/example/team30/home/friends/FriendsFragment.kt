@@ -102,10 +102,9 @@ class FriendsFragment: Fragment() {
             var view = holder.itemView
 
             // db 에서 프로필 이미지 가져오기 (팔로우 하는 uid 만)
-            Log.d(TAG, followUidList.isEmpty().toString())
             Log.d(TAG, followUidList.size.toString())
             Log.d(TAG, followUidList[0])
-            if(followUidList[0] == "") {
+            if(followUidList[0].isBlank()) {
                 Log.d(TAG, "없다.")
                 view.item_follow_profile_textview.text = "친구가 없어요..."
             } else {
@@ -116,9 +115,11 @@ class FriendsFragment: Fragment() {
                         val url = task.result!!["image"]
                         Glide.with(view.context).load(url).apply(RequestOptions().circleCrop())
                             .into(view.item_follow_profile_imageview)
+                        val name = task.result!!["name"]
+                        val email = task.result!!["email"]
+                        view.item_follow_profile_textview.text = "${name}(${email})"
                     }
                 }
-                view.item_follow_profile_textview.text = followUidList[position]
             }
 
 //            // followUidList 출력해보기
