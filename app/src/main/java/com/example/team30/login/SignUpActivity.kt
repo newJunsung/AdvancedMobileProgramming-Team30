@@ -7,6 +7,8 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.team30.databinding.ActivitySignupBinding
+import com.example.team30.home.SNSActivity
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
@@ -15,6 +17,10 @@ import com.google.firebase.ktx.Firebase
 class SignUpActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySignupBinding
     lateinit var db: FirebaseFirestore
+
+    companion object {
+        const val BASIC_IMAGE_URL = "https://firebasestorage.googleapis.com/v0/b/team30-project.appspot.com/o/userProfileImages%2FBasic.png?alt=media&token=c8dc87bc-405d-442a-ba5a-993077099854"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,21 +35,21 @@ class SignUpActivity : AppCompatActivity() {
         db = Firebase.firestore
 
         binding.signUpbtn2.setOnClickListener { // 회원가입 버튼 누르면
-            doSignUp(email.toString(), password.toString()) // 회원가입
+            doSignUp(email.toString(), password.toString(), name.toString()) // 회원가입
             // 유저 이름 받아서
             val user = hashMapOf (
                 "name" to name.toString()
             )
 
-            // firestore 에 유저 이름 추가
-            db.collection("users").document(name.toString())
-                .set(user)
-                .addOnSuccessListener { documentReference ->
-                    //Log.d(TAG, "DocumentSnapshot added with ID: ${documentReference.id}")
-                }
-                .addOnFailureListener { e ->
-                    Log.w(TAG, "Error adding document", e)
-                }
+//            // firestore 에 유저 이름 추가
+//            db.collection("users").document(name.toString())
+//                .set(user)
+//                .addOnSuccessListener { documentReference ->
+//                    //Log.d(TAG, "DocumentSnapshot added with ID: ${documentReference.id}")
+//                }
+//                .addOnFailureListener { e ->
+//                    Log.w(TAG, "Error adding document", e)
+//                }
 
             // 회원가입 중복 확인.. 추가
             /*val docRef = db.collection("users").document(email.toString())
@@ -56,12 +62,21 @@ class SignUpActivity : AppCompatActivity() {
         }
     }
 
-    private fun doSignUp(userEmail: String, password: String) {
+    private fun doSignUp(userEmail: String, password: String, name: String) {
         Firebase.auth.createUserWithEmailAndPassword(userEmail, password)
             .addOnCompleteListener(this) {
                 if (it.isSuccessful) {
+                    Firebase.auth.signInWithEmailAndPassword(userEmail, password).addOnSuccessListener {
+                        var map = HashMap<String, Any>()
+                        map["image"] = BASIC_IMAGE_URL
+                        map["email"] = userEmail
+                        map["name"] =  name
+                        val uid = FirebaseAuth.getInstance().currentUser!!.uid
+                        db.collection("profileImages").document(uid)
+                            .set(map)
+                    }
                     startActivity(
-                        Intent(this, LoginActivity::class.java)
+                        Intent(this, SNSActivity::class.java)
                     )
                     finish()
                 } else {
