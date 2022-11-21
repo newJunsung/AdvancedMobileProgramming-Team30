@@ -99,8 +99,16 @@ class FeedsFragment: Fragment() {
             viewholder.findViewById<TextView>(R.id.feed_timeline_favoritecounter_textview).text = "Likes " + postDTOs!![position].favoriteCount
 
             // ProfileImage
-            Glide.with(holder.itemView.context).load(postDTOs[position].imageUrl)
-                .into(viewholder.findViewById(R.id.feed_timeline_profile_image))
+            //            Glide.with(holder.itemView.context).load(postDTOs[position].imageUrl)
+//                .into(viewholder.findViewById(R.id.feed_timeline_profile_image))
+            var instance = FirebaseFirestore.getInstance().collection("profileImages")
+                .document(postDTOs[position].uid!!).get()
+            instance.addOnCompleteListener {
+                if(it.isSuccessful) {
+                    Glide.with(holder.itemView.context).load(it.result["image"])
+                        .into(viewholder.findViewById((R.id.feed_timeline_profile_image)))
+                }
+            }
 
             // '좋아요' 버튼 클릭 이벤트
             viewholder.findViewById<ImageView>(R.id.feed_timeline_favorite_imageview).setOnClickListener {
