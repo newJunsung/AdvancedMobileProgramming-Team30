@@ -24,6 +24,7 @@ import com.example.team30.post.model.FollowDTO
 import com.example.team30.post.model.PostDTO
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.Query
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_sns.*
 import kotlinx.android.synthetic.main.fragment_profile.view.*
@@ -54,6 +55,8 @@ class ProfileFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        val snsActivity = (activity as SNSActivity)
+
         fragmentView = LayoutInflater.from(activity).inflate(R.layout.fragment_profile, container, false)
         firestore = FirebaseFirestore.getInstance()
         auth = FirebaseAuth.getInstance()
@@ -62,7 +65,7 @@ class ProfileFragment: Fragment() {
         uid = arguments?.getString("destinationUid")
         currentUserUid = auth?.currentUser?.uid
         if (currentUserUid == uid) { //자신의 프로필
-            fragmentView?.logout_follow_button?.text = "LOG OUT"
+            fragmentView?.logout_follow_button?.text = "LOGOUT"
             fragmentView?.logout_follow_button?.setOnClickListener {
                 activity?.finish()
                 startActivity(Intent(activity, LoginActivity::class.java))
@@ -70,13 +73,14 @@ class ProfileFragment: Fragment() {
             }
         } else {//상대의 프로필
             fragmentView?.logout_follow_button?.text = "FOLLOW"
-            var snsActivity = (activity as SNSActivity)
+            snsActivity.toolbar?.visibility = View.VISIBLE // 툴바 보이기
             snsActivity.toolbar_logo?.visibility = View.GONE
             snsActivity.toolbar_user_id?.visibility = View.VISIBLE
             snsActivity.toolbar_user_id?.text = arguments?.getString("userID")
             snsActivity.toolbar_back_button?.visibility = View.VISIBLE
             snsActivity.toolbar_back_button?.setOnClickListener {
                 snsActivity.bottom_tab_bar.selectedItemId = R.id.tab_bar_feeds
+                snsActivity.toolbar?.visibility = View.GONE // 이전 버튼을 누르면 다시 툴바 숨기기
             }
             fragmentView?.logout_follow_button?.setOnClickListener {
                 requestFollow()
@@ -202,7 +206,7 @@ class ProfileFragment: Fragment() {
         var PostDTOs: ArrayList<PostDTO> = arrayListOf()
 
         init {
-            firestore?.collection("posts")?.whereEqualTo("uid", uid)?.addSnapshotListener { value, error ->
+            firestore?.collection("posts")?.orderBy("timestamp", Query.Direction.DESCENDING)?.whereEqualTo("uid", uid)?.addSnapshotListener { value, error ->
                 if (value == null) {
                     return@addSnapshotListener
                 }

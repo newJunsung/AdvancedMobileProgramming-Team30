@@ -18,6 +18,7 @@ import com.example.team30.post.model.AlarmDTO
 import com.example.team30.post.model.PostDTO
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.ktx.Firebase
 
 class FeedsFragment: Fragment() {
@@ -58,10 +59,10 @@ class FeedsFragment: Fragment() {
 
         // db에 접근해서 시간순으로 데이터 받아올 수 있는 쿼리
         init {
-            firestore?.collection("posts")?.orderBy("timestamp")?.addSnapshotListener {querySnapshot, firebaseFirestoreException ->
+            firestore?.collection("posts")?.orderBy("timestamp", Query.Direction.DESCENDING)?.addSnapshotListener {querySnapshot, firebaseFirestoreException ->
                 // 받자마자 값 초기화하고
-                postDTOs.clear()
-                postUidList.clear()
+//                postDTOs.clear()
+//                postUidList.clear()
                 // snapshot 에 넘어오는 데이터 읽기
                 for (snapshot in querySnapshot!!.documents) {
                     var item = snapshot.toObject(PostDTO::class.java)

@@ -16,11 +16,15 @@ import com.example.team30.home.profile.ProfileFragment
 import com.example.team30.post.model.AlarmDTO
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import kotlinx.android.synthetic.main.fragment_alarm.view.*
 import kotlinx.android.synthetic.main.item_comment.view.*
 import kotlinx.android.synthetic.main.item_follow.view.*
 
 class AlarmFragment : Fragment() {
+    var firestore : FirebaseFirestore? = null
+    var uid : String? = null
+
     companion object {
         const val TAG: String = "로그"
 
@@ -40,6 +44,9 @@ class AlarmFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         var view = LayoutInflater.from(activity).inflate(R.layout.fragment_alarm, container, false)
+        firestore = FirebaseFirestore.getInstance()
+        uid = FirebaseAuth.getInstance().currentUser?.uid
+
         view.alarmfragment_recyclerview.adapter = AlarmRecyclerviewAdapter() // 어댑터와 리사이클러뷰 연결
         view.alarmfragment_recyclerview.layoutManager = LinearLayoutManager(activity) // 세로로 배치
         return view
@@ -50,12 +57,14 @@ class AlarmFragment : Fragment() {
         var alarmDTOList: ArrayList<AlarmDTO> = arrayListOf()
 
         init {
-            val uid = FirebaseAuth.getInstance().currentUser?.uid
-            FirebaseFirestore.getInstance().collection("alarms").whereEqualTo("destinationUid", uid) // 나에게 도착한 메시지만 필터링
-                .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
-                    alarmDTOList.clear()
+            firestore
+                ?.collection("alarms")
+                ?.orderBy("timestamp", Query.Direction.DESCENDING)
+                ?.whereEqualTo("destinationUid", uid) // 나에게 도착한 메시지만 필터링
+                ?.addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+//                    alarmDTOList.clear()
                     if (querySnapshot == null) return@addSnapshotListener
-                    for (snapshot in querySnapshot.documents) {
+                    for (snapshot in querySnapshot!!.documents) {
                         alarmDTOList.add(snapshot.toObject(AlarmDTO::class.java)!!)
                         //Log.d("alarmDTOList : ", alarmDTOList[0].toString())
                     }
@@ -71,10 +80,11 @@ class AlarmFragment : Fragment() {
 
         override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
             var view = holder.itemView
+//            var view = (holder as CustomerViewHolder).itemView
 
             // db 에서 프로필 이미지 가져오기
-            FirebaseFirestore.getInstance().collection("profileImages").document(alarmDTOList[position].uid!!).get()
-                .addOnCompleteListener { task ->
+            firestore?.collection("profileImages")?.document(alarmDTOList[position].uid!!)?.get()
+                ?.addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         val url = task.result!!["image"]
 //                        Glide.with(view.context).load(url).apply(RequestOptions().circleCrop()).into(view.item_comment_profile_imageview)

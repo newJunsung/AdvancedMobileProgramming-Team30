@@ -44,6 +44,9 @@ class SNSActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListene
         feedsFragment = FeedsFragment.newInstance()
         supportFragmentManager.beginTransaction().add(R.id.fragments_frame, feedsFragment).commit()
 
+        // 툴바는 기본적으로 숨기기
+        binding.toolbar.visibility = View.GONE
+
         val channel = NotificationChannel(
             "firebase-messaging", "firebase-messaging channel",
             NotificationManager.IMPORTANCE_DEFAULT
@@ -58,10 +61,12 @@ class SNSActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListene
         setDefaultToolbar()
         when (item.itemId) {
             R.id.tab_bar_feeds -> {
+                binding.toolbar.visibility = View.GONE // 피드로 돌아갈 때 툴바 숨기기
                 feedsFragment = FeedsFragment.newInstance()
                 supportFragmentManager.beginTransaction().replace(R.id.fragments_frame, feedsFragment).commit()
             }
             R.id.tab_bar_profile -> {
+                binding.toolbar.visibility = View.GONE // 자기 프로필 화면으로 돌아갈 때 툴바 숨기기
                 profileFragment = ProfileFragment.newInstance()
                 var bundle = Bundle()
                 var uid = FirebaseAuth.getInstance().currentUser?.uid
@@ -70,10 +75,12 @@ class SNSActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListene
                 supportFragmentManager.beginTransaction().replace(R.id.fragments_frame, profileFragment).commit()
             }
             R.id.tab_bar_friends -> {
+                binding.toolbar.visibility = View.GONE // 팔로우 목록으로 돌아갈 때 툴바 숨기기
                 friendsFragment = FriendsFragment.newInstance()
                 supportFragmentManager.beginTransaction().replace(R.id.fragments_frame, friendsFragment).commit()
             }
             R.id.tab_bar_alarm -> {
+                binding.toolbar.visibility = View.GONE // 알림 목록으로 돌아갈 때 툴바 숨기기
                 alarmfragment = AlarmFragment.newInstance()
                 supportFragmentManager.beginTransaction().replace(R.id.fragments_frame, alarmfragment).commit()
             }

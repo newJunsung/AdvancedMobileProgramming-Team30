@@ -106,7 +106,7 @@ class FriendsFragment: Fragment() {
             Log.d(TAG, followUidList[0])
             if(followUidList[0].isBlank()) {
                 Log.d(TAG, "없다.")
-                view.item_follow_profile_textview.text = "친구가 없어요..."
+                view.item_follow_profile_textview.text = "팔로우하고 있는 친구가 없어요..."
             } else {
                 var instance = FirebaseFirestore.getInstance().collection("profileImages")
                     .document(followUidList[position]).get()
