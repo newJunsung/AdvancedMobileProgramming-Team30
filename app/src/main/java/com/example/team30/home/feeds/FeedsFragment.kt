@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.team30.R
-import com.example.team30.databinding.FragmentFeedsBinding
 import com.example.team30.home.profile.ProfileFragment
 import com.example.team30.post.CommentActivity
 import com.example.team30.post.model.AlarmDTO
@@ -19,7 +18,6 @@ import com.example.team30.post.model.PostDTO
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import com.google.firebase.ktx.Firebase
 
 class FeedsFragment: Fragment() {
     var firestore : FirebaseFirestore? = null

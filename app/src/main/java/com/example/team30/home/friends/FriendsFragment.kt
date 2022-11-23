@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.team30.R
+import com.example.team30.home.profile.ProfileFragment
 import com.example.team30.post.model.FollowDTO
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -118,6 +119,24 @@ class FriendsFragment: Fragment() {
                         val name = task.result!!["name"]
                         val email = task.result!!["email"]
                         view.item_follow_profile_textview.text = "${name}(${email})"
+
+                        view.item_follow_profile_imageview.setOnClickListener {
+                            var userid = ""
+                            FirebaseFirestore.getInstance()
+                                .collection("users")
+                                .document(followUidList[position])
+                                .get()
+                                .addOnSuccessListener { result ->
+                                    userid = result.toString()
+                                }
+
+                            var fragment = ProfileFragment.newInstance()
+                            var bundle = Bundle()
+                            bundle.putString("destinationUid", followUidList[position])
+                            bundle.putString("userID", userid)
+                            fragment.arguments = bundle
+                            activity?.supportFragmentManager?.beginTransaction()?.replace(R.id.fragments_frame, fragment)?.commit()
+                        }
                     }
                 }
             }
@@ -138,8 +157,5 @@ class FriendsFragment: Fragment() {
         override fun getItemCount(): Int {
             return followUidList.size
         }
-
     }
-
-
 }

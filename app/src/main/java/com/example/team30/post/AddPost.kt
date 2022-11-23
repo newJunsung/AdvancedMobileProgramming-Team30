@@ -1,12 +1,10 @@
 package com.example.team30.post
 
 import android.app.Activity
-import android.content.ContentUris
 import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest

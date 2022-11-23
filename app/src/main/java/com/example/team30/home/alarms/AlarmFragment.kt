@@ -11,14 +11,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.team30.R
-import com.example.team30.home.feeds.FeedsFragment
 import com.example.team30.home.profile.ProfileFragment
 import com.example.team30.post.model.AlarmDTO
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import kotlinx.android.synthetic.main.fragment_alarm.view.*
-import kotlinx.android.synthetic.main.item_comment.view.*
 import kotlinx.android.synthetic.main.item_follow.view.*
 
 class AlarmFragment : Fragment() {
@@ -79,8 +77,7 @@ class AlarmFragment : Fragment() {
         inner class CustomerViewHolder(view: View): RecyclerView.ViewHolder(view)
 
         override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-            var view = holder.itemView
-//            var view = (holder as CustomerViewHolder).itemView
+            val view = (holder as CustomerViewHolder).itemView
 
             // db 에서 프로필 이미지 가져오기
             firestore?.collection("profileImages")?.document(alarmDTOList[position].uid!!)?.get()
@@ -111,10 +108,23 @@ class AlarmFragment : Fragment() {
                 }
             }
             // view.item_comment_message_textview.visibility = View.INVISIBLE
+
+            view.item_follow_profile_imageview.setOnClickListener {
+                profileImageClickEvent(position)
+            }
         }
 
         override fun getItemCount(): Int {
             return alarmDTOList.size
+        }
+
+        fun profileImageClickEvent(position: Int) {
+            var fragment = ProfileFragment.newInstance()
+            var bundle = Bundle()
+            bundle.putString("destinationUid", alarmDTOList[position].uid)
+            bundle.putString("userID", alarmDTOList[position].userId)
+            fragment.arguments = bundle
+            activity?.supportFragmentManager?.beginTransaction()?.replace(R.id.fragments_frame, fragment)?.commit()
         }
 
     }
