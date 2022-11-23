@@ -13,6 +13,7 @@ import com.bumptech.glide.Glide
 import com.example.team30.R
 import com.example.team30.home.profile.ProfileFragment
 import com.example.team30.post.CommentActivity
+import com.example.team30.post.FavoriteActivity
 import com.example.team30.post.model.AlarmDTO
 import com.example.team30.post.model.PostDTO
 import com.google.firebase.auth.FirebaseAuth
@@ -112,6 +113,14 @@ class FeedsFragment: Fragment() {
             // '좋아요' 버튼 클릭 이벤트
             viewholder.findViewById<ImageView>(R.id.feed_timeline_favorite_imageview).setOnClickListener {
                 favoriteClickEvent(position)
+            }
+
+            // '좋아요 수'를 클릭하면 좋아요 버튼을 누른 사람들 목록 창으로 넘어감
+            viewholder.findViewById<TextView>(R.id.feed_timeline_favoritecounter_textview).setOnClickListener {
+                var intent = Intent(it.context, FavoriteActivity::class.java)
+                intent.putExtra("contentUid", postUidList[position])
+                //intent.putExtra("destinationUid", postDTOs[position].uid)
+                startActivity(intent)
             }
 
             if (postDTOs!![position].favorites.containsKey(uid)) { // 클릭한 경우 하트 이미지

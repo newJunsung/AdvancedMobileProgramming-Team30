@@ -32,6 +32,9 @@
         </service>
 
         <activity
+            android:name=".post.FavoriteActivity"
+            android:exported="false"/>
+        <activity
             android:name=".post.CommentActivity"
             android:exported="false">
             <meta-data
