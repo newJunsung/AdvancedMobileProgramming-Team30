@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal">
@@ -20,10 +22,22 @@
             android:textSize="20sp"
             android:textStyle="bold" />
 
+        <SearchView
+            android:id="@+id/search_friends"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="60dp"
+            android:layout_marginRight="30dp"
+            android:background="@drawable/round_text"
+            android:inputType="text"
+            app:queryHint="검색"
+            android:queryBackground="@null"/>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/seefollowers_recyclerview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="50dp"></androidx.recyclerview.widget.RecyclerView>
+            android:layout_marginTop="100dp"></androidx.recyclerview.widget.RecyclerView>
     </FrameLayout>
 </LinearLayout>
