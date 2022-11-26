@@ -82,6 +82,8 @@ class AddPost : AppCompatActivity() {
                 postDTO.uid = auth.currentUser?.uid
                 // Insert userId
                 postDTO.userId = auth.currentUser?.email
+                // Insert name
+                //postDTO.name = auth.currentUser?.displayName
                 // Insert title
                 postDTO.title = binding.addpostTitle.text.toString()
                 // Insert description

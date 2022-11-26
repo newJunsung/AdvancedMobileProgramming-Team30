@@ -26,6 +26,8 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
     lateinit var db: FirebaseFirestore
     lateinit var alertDialog: AlertDialog
+    private var email:String? = null
+    private var password:String? = null
 
     // 이메일 검사 정규식
     private val emailValidation =
@@ -37,10 +39,6 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         db = Firebase.firestore
-
-        // 사용자가 입력한 이메일과 비밀번호
-        var email = binding.emailEdit.text
-        var password = binding.passwordEdit.text
 
         // 입력하는 글자색 검정으로
         binding.emailEdit.setTextColor(Color.BLACK)
@@ -92,7 +90,10 @@ class LoginActivity : AppCompatActivity() {
 
         // 로그인 버튼 눌러서 로그인
         binding.loginbtn.setOnClickListener {
-            doLogin(email.toString(), password.toString())
+            // 사용자가 입력한 이메일과 비밀번호
+            email = binding.emailEdit.text.toString()
+            password = binding.passwordEdit.text.toString()
+            doLogin(email!!, password!!)
         }
     }
 
@@ -100,24 +101,31 @@ class LoginActivity : AppCompatActivity() {
         super.onStart()
     }
 
-    private fun doLogin(userEmail: String, password: String) {
+    private fun doLogin(userEmail: String, userPw: String) {
         // 이메일 형식 다시 한 번 체크
         if (!checkEmail()) { // 이메일 형식이 아닐 경우
             Toast.makeText(this, "이메일 형식을 확인해주세요!", Toast.LENGTH_SHORT).show()
         }
-        Firebase.auth.signInWithEmailAndPassword(userEmail.toString(), password.toString())
-            .addOnCompleteListener(this) {
-                if (it.isSuccessful) {
-                    startActivity(
-                        Intent(this, SNSActivity::class.java)
-                    )
-                    finish()
-                } else {
-                    Log.w("LoginActivity", "signInWithEmail", it.exception)
-                    //Toast.makeText(this, "입력한 정보를 다시 확인해주세요", Toast.LENGTH_SHORT).show()
-                    alertDialog.show()
+
+        // 모든 정보를 입력했을 때에만 로그인 가능
+        if (userEmail.isNotEmpty() && userPw.isNotEmpty()) {
+            Log.d("로그인 정보 ", userEmail)
+            Firebase.auth.signInWithEmailAndPassword(userEmail, userPw)
+                .addOnCompleteListener(this) {
+                    if (it.isSuccessful) {
+                        startActivity(
+                            Intent(this, SNSActivity::class.java)
+                        )
+                        finish()
+                    } else {
+                        Log.w("LoginActivity", "signInWithEmail", it.exception)
+                        //Toast.makeText(this, "입력한 정보를 다시 확인해주세요", Toast.LENGTH_SHORT).show()
+                        alertDialog.show()
+                    }
                 }
-            }
+        } else {
+            Toast.makeText(this, "로그인 정보를 입력해주세요!", Toast.LENGTH_SHORT).show()
+        }
     }
 
     fun moveSNSActivity(user: FirebaseUser?) {

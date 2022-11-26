@@ -94,28 +94,34 @@ class SignUpActivity : AppCompatActivity() {
         }
     }
 
-    private fun doSignUp(userEmail: String, password: String, name: String) {
-        Firebase.auth.createUserWithEmailAndPassword(userEmail, password)
-            .addOnCompleteListener(this) {
-                if (it.isSuccessful) {
-                    Firebase.auth.signInWithEmailAndPassword(userEmail, password).addOnSuccessListener {
-                        var map = HashMap<String, Any>()
-                        map["image"] = BASIC_IMAGE_URL
-                        map["email"] = userEmail
-                        map["name"] =  name
-                        val uid = FirebaseAuth.getInstance().currentUser!!.uid
-                        db.collection("profileImages").document(uid)
-                            .set(map)
+    private fun doSignUp(userEmail: String, userPw: String, name: String) {
+        // 모든 정보를 입력했을 경우에만 회원가입 가능
+        if (userEmail.isNotEmpty() && userPw.isNotEmpty() && name.isNotEmpty()) {
+            Firebase.auth.createUserWithEmailAndPassword(userEmail, userPw)
+                .addOnCompleteListener(this) {
+                    if (it.isSuccessful) {
+                        Firebase.auth.signInWithEmailAndPassword(userEmail, userPw)
+                            .addOnSuccessListener {
+                                var map = HashMap<String, Any>()
+                                map["image"] = BASIC_IMAGE_URL
+                                map["email"] = userEmail
+                                map["name"] = name
+                                val uid = FirebaseAuth.getInstance().currentUser!!.uid
+                                db.collection("profileImages").document(uid)
+                                    .set(map)
+                            }
+                        startActivity(
+                            Intent(this, SNSActivity::class.java)
+                        )
+                        finish()
+                    } else {
+                        Log.w("LoginActivity", "signUpWithEmail", it.exception)
+                        Toast.makeText(this, "비밀번호는 6자 이상이어야 합니다", Toast.LENGTH_SHORT).show()
                     }
-                    startActivity(
-                        Intent(this, SNSActivity::class.java)
-                    )
-                    finish()
-                } else {
-                    Log.w("LoginActivity", "signUpWithEmail", it.exception)
-                    Toast.makeText(this, "비밀번호는 6자 이상이어야 합니다", Toast.LENGTH_SHORT).show()
                 }
-            }
+        } else {
+            Toast.makeText(this, "회원 정보를 입력해주세요!", Toast.LENGTH_SHORT).show()
+        }
     }
 
     // 이메일 형식 검사

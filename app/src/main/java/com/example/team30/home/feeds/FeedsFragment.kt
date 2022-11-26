@@ -19,6 +19,7 @@ import com.example.team30.post.model.PostDTO
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import org.w3c.dom.Text
 
 class FeedsFragment: Fragment() {
     var firestore : FirebaseFirestore? = null
@@ -87,6 +88,9 @@ class FeedsFragment: Fragment() {
 
             // UserId
             viewholder.findViewById<TextView>(R.id.feed_timeline_profile_textview).text = postDTOs[position].userId
+
+            // name
+            //viewholder.findViewById<TextView>()
 
             // Image
             Glide.with(holder.itemView.context).load(postDTOs[position].imageUrl)
