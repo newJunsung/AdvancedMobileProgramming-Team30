@@ -5,4 +5,8 @@
     <string name="alarm_favorite">님이 회원님의 게시물을 좋아합니다.</string>
     <string name="alarm_comment">님이 회원님의 게시물에 댓글을 남겼습니다.</string>
     <string name="alarm_follow">님이 회원님을 팔로우하기 시작했습니다.</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>

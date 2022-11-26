@@ -14,6 +14,7 @@ import com.example.team30.R
 import com.example.team30.databinding.ActivitySnsBinding
 import com.example.team30.home.alarms.AlarmFragment
 import com.example.team30.home.feeds.FeedsFragment
+import com.example.team30.home.followers.SeeFollowersFragment
 import com.example.team30.home.friends.FriendsFragment
 import com.example.team30.home.profile.ProfileFragment
 import com.example.team30.post.AddPost
@@ -33,6 +34,7 @@ class SNSActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListene
     private lateinit var profileFragment: ProfileFragment
     private lateinit var friendsFragment: FriendsFragment
     private lateinit var alarmfragment: AlarmFragment
+    private lateinit var seefollowersFragment: SeeFollowersFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,6 +85,12 @@ class SNSActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListene
                 binding.toolbar.visibility = View.GONE // 알림 목록으로 돌아갈 때 툴바 숨기기
                 alarmfragment = AlarmFragment.newInstance()
                 supportFragmentManager.beginTransaction().replace(R.id.fragments_frame, alarmfragment).commit()
+            }
+            R.id.tab_bar_followers -> {
+                binding.toolbar.visibility = View.GONE // 팔로워 목록으로 돌아갈 때 툴바 숨기기
+                seefollowersFragment = SeeFollowersFragment.newInstance()
+                supportFragmentManager.beginTransaction().replace(R.id.fragments_frame, seefollowersFragment).commit()
+
             }
         }
 

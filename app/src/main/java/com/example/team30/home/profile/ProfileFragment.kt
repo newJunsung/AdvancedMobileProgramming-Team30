@@ -18,6 +18,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.example.team30.R
 import com.example.team30.home.SNSActivity
+import com.example.team30.home.followers.SeeFollowersFragment
+import com.example.team30.home.friends.FriendsFragment
 import com.example.team30.login.LoginActivity
 import com.example.team30.post.model.AlarmDTO
 import com.example.team30.post.model.FollowDTO
@@ -35,6 +37,9 @@ class ProfileFragment: Fragment() {
     var uid: String? = null
     var auth: FirebaseAuth? = null
     var currentUserUid: String? = null
+
+    lateinit var friendsFragment: FriendsFragment
+    lateinit var seefollowersFragment: SeeFollowersFragment
 
     companion object {
         const val TAG: String = "프로필"
@@ -70,6 +75,14 @@ class ProfileFragment: Fragment() {
                 activity?.finish()
                 startActivity(Intent(activity, LoginActivity::class.java))
                 auth?.signOut()
+            }
+            fragmentView?.following_container?.setOnClickListener {
+                friendsFragment = FriendsFragment.newInstance()
+                parentFragmentManager.beginTransaction().replace(R.id.fragments_frame, friendsFragment).commit()
+            }
+            fragmentView?.followers_container?.setOnClickListener {
+                seefollowersFragment = SeeFollowersFragment.newInstance()
+                parentFragmentManager.beginTransaction().replace(R.id.fragments_frame, seefollowersFragment).commit()
             }
         } else {//상대의 프로필
             fragmentView?.logout_follow_button?.text = "FOLLOW"

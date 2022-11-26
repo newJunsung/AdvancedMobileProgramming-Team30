@@ -60,8 +60,8 @@ class FeedsFragment: Fragment() {
         init {
             firestore?.collection("posts")?.orderBy("timestamp", Query.Direction.DESCENDING)?.addSnapshotListener {querySnapshot, firebaseFirestoreException ->
                 // 받자마자 값 초기화하고
-//                postDTOs.clear()
-//                postUidList.clear()
+                postDTOs.clear()
+                postUidList.clear()
                 // snapshot 에 넘어오는 데이터 읽기
                 for (snapshot in querySnapshot!!.documents) {
                     var item = snapshot.toObject(PostDTO::class.java)
