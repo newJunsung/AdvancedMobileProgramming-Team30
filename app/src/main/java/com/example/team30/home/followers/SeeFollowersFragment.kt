@@ -106,35 +106,40 @@ class SeeFollowersFragment : Fragment() {
 
             // db 에서 프로필 이미지 가져오기 (팔로우 하는 uid 만)
             Log.d(FriendsFragment.TAG, followerUidList.size.toString())
-            var instance = firestore.collection("profileImages")
-                .document(followerUidList[position]).get()
-            instance.addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val url = task.result!!["image"]
-                    Glide.with(view.context).load(url).apply(RequestOptions().circleCrop())
-                        .into(view.item_follow_profile_imageview)
-                    val name = task.result!!["name"]
-                    val email = task.result!!["email"]
-                    view.item_follow_profile_textview.text = "${name}(${email})"
+            if (followerUidList[0] != "") {
+                var instance = firestore.collection("profileImages")
+                    .document(followerUidList[position]).get()
+                instance.addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val url = task.result!!["image"]
+                        Glide.with(view.context).load(url).apply(RequestOptions().circleCrop())
+                            .into(view.item_follow_profile_imageview)
+                        val name = task.result!!["name"]
+                        val email = task.result!!["email"]
+                        view.item_follow_profile_textview.text = "${name}(${email})"
 
-                    view.item_follow_profile_imageview.setOnClickListener {
-                        var userid = ""
-                        FirebaseFirestore.getInstance()
-                            .collection("users")
-                            .document(followerUidList[position])
-                            .get()
-                            .addOnSuccessListener { result ->
-                                userid = result.toString()
-                            }
+                        view.item_follow_profile_imageview.setOnClickListener {
+                            var userid = ""
+                            FirebaseFirestore.getInstance()
+                                .collection("users")
+                                .document(followerUidList[position])
+                                .get()
+                                .addOnSuccessListener { result ->
+                                    userid = result.toString()
+                                }
 
-                        var fragment = ProfileFragment.newInstance()
-                        var bundle = Bundle()
-                        bundle.putString("destinationUid", followerUidList[position])
-                        bundle.putString("userID", userid)
-                        fragment.arguments = bundle
-                        activity?.supportFragmentManager?.beginTransaction()?.replace(R.id.fragments_frame, fragment)?.commit()
+                            var fragment = ProfileFragment.newInstance()
+                            var bundle = Bundle()
+                            bundle.putString("destinationUid", followerUidList[position])
+                            bundle.putString("userID", userid)
+                            fragment.arguments = bundle
+                            activity?.supportFragmentManager?.beginTransaction()
+                                ?.replace(R.id.fragments_frame, fragment)?.commit()
+                        }
                     }
                 }
+            } else {
+                view.item_follow_profile_textview.text = "팔로워인 친구가 없어요..."
             }
         }
 
