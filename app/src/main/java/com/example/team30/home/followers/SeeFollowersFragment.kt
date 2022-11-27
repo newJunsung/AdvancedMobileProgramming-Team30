@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,6 +21,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
+import kotlinx.android.synthetic.main.fragment_seefollowers.*
 import kotlinx.android.synthetic.main.fragment_seefollowers.view.*
 import kotlinx.android.synthetic.main.item_follow.view.*
 
@@ -55,6 +57,21 @@ class SeeFollowersFragment : Fragment() {
 
         view.seefollowers_recyclerview.adapter = FollowersRecyclerviewAdapter()
         view.seefollowers_recyclerview.layoutManager = LinearLayoutManager(activity)
+
+        view.findViewById<SearchView>(R.id.search_friends)
+            .setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(p0: String?): Boolean {
+                    return false
+                }
+
+                override fun onQueryTextChange(p0: String?): Boolean {
+                    (seefollowers_recyclerview.adapter as SeeFollowersFragment.FollowersRecyclerviewAdapter)
+                        .searchFriends(p0!!)
+                    return true
+                }
+
+            })
+
         return view
     }
 
@@ -125,5 +142,44 @@ class SeeFollowersFragment : Fragment() {
             return followerUidList.size
         }
 
+        // 파이어스토어에서 데이터를 불러와서 검색어가 있는지 판단
+        fun searchFriends(search: String) {
+
+            for (followerUid in followerUidList) {
+                FirebaseFirestore.getInstance().collection("profileImages").document(followerUid)
+                    .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+                        Log.d("검색한 following ", followerUid)
+                        Log.d("querysnapshot ", querySnapshot.toString())
+                        // followerUid 에 대한 name 값을 arraylist 로
+                        val nameList: ArrayList<String> = arrayListOf()
+                        //(it.replace("[{}]".toRegex(), "").split("="))[0]
+                        Log.d("uid ", querySnapshot?.getString("name").toString())
+                        if (querySnapshot?.getString("name").toString().contains(search)) {
+                            followerUidList.clear()
+                            followerUidList.add(followerUid)
+                            Log.d("검색한 후 followersUidList ", followerUidList.toString())
+                        }
+                        notifyDataSetChanged()
+                    }
+            }
+
+            if (search.isEmpty()) {
+                FirebaseFirestore.getInstance().collection("users")
+                    .document(FirebaseAuth.getInstance().currentUser?.uid!!)
+                    .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+                        Log.d(TAG, querySnapshot.toString())
+                        followerUidList.clear()
+                        val tempUID = querySnapshot!!.get("followings").toString().split(", ")
+                        tempUID.forEach {
+                            val UID = (it.replace("[{}]".toRegex(), "").split("="))[0]
+                            followerUidList.add(UID)
+                        }
+                        Log.d("맨 처음 followersUidList 세팅 ", followerUidList.toString())
+                        notifyDataSetChanged() // 값 새로고침
+                    }
+
+                Log.d("검색한 후 followersUidList ", followerUidList.toString())
+            }
+        }
     }
 }
