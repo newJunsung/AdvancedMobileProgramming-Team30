@@ -153,7 +153,7 @@ class SeeFollowersFragment : Fragment() {
             for (followerUid in followerUidList) {
                 FirebaseFirestore.getInstance().collection("profileImages").document(followerUid)
                     .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
-                        Log.d("검색한 following ", followerUid)
+                        Log.d("검색한 follower ", followerUid)
                         Log.d("querysnapshot ", querySnapshot.toString())
                         // followerUid 에 대한 name 값을 arraylist 로
                         val nameList: ArrayList<String> = arrayListOf()
@@ -174,7 +174,7 @@ class SeeFollowersFragment : Fragment() {
                     .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
                         Log.d(TAG, querySnapshot.toString())
                         followerUidList.clear()
-                        val tempUID = querySnapshot!!.get("followings").toString().split(", ")
+                        val tempUID = querySnapshot!!.get("followers").toString().split(", ")
                         tempUID.forEach {
                             val UID = (it.replace("[{}]".toRegex(), "").split("="))[0]
                             followerUidList.add(UID)
