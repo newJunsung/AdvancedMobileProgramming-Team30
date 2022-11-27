@@ -24,23 +24,28 @@
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
-                android:text="사진 업로드" />
+                android:text="사진 업로드"
+                android:fontFamily="@font/cookierun_bold"/>
             <Button
                 android:id="@+id/addpost_upload_button"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
-                android:text="글 업로드" />
+                android:text="글 업로드"
+                android:fontFamily="@font/cookierun_bold" />
         </LinearLayout>
+
         <EditText
             android:id="@+id/addpost_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
             android:layout_marginRight="8dp"
+            android:background="@drawable/textbox_border"
             android:hint="Title"
-            android:background="@drawable/textbox_border"/>
+            android:fontFamily="@font/cookierun_regular"
+            android:minHeight="48dp" />
         <EditText
             android:id="@+id/addpost_description"
             android:layout_width="match_parent"
@@ -51,6 +56,7 @@
             android:inputType="text|textMultiLine"
             android:gravity="top"
             android:hint="Description"
+            android:fontFamily="@font/cookierun_regular"
             android:background="@drawable/textbox_border"/>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

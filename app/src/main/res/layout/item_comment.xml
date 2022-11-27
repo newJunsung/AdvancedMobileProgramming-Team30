@@ -17,12 +17,13 @@
         android:layout_height="wrap_content"
         android:layout_margin="7.5dp"
         android:text="UserID"
-        android:textStyle="bold" />
+        android:fontFamily="@font/cookierun_bold" />
 
     <TextView
         android:id="@+id/item_comment_message_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="7.5dp"
-        android:text="Message" />
+        android:text="Message"
+        android:fontFamily="@font/cookierun_regular"/>
 </LinearLayout>

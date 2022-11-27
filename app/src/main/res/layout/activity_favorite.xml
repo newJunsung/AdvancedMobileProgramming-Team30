@@ -24,6 +24,7 @@
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
         android:text="좋아요"
+        android:fontFamily="@font/cookierun_bold"
         android:textAlignment="center"
         android:textSize="20sp"
         android:textStyle="bold"

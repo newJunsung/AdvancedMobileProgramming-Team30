@@ -17,7 +17,8 @@
             android:id="@+id/feed_timeline_profile_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="User name"/>
+            android:text="User name"
+            android:fontFamily="@font/cookierun_regular" />
     </LinearLayout>
     <ImageView
         android:background="@drawable/square_background_border_top_bottom_light_gray"
@@ -53,12 +54,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="like 0"
-            android:textStyle="bold" />
+            android:fontFamily="@font/cookierun_bold" />
 
         <TextView
             android:id="@+id/feed_timeline_description_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Description" />
+            android:text="Description"
+            android:fontFamily="@font/cookierun_regular" />
     </LinearLayout>
 </LinearLayout>

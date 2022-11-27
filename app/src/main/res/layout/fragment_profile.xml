@@ -20,6 +20,7 @@
             android:layout_toEndOf="@id/user_profile"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
+            android:fontFamily="@font/cookierun_bold"
             android:text="FOLLOW" />
 
         <LinearLayout
@@ -38,6 +39,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/cookierun_regular"
                     android:text="POST" />
 
                 <TextView
@@ -56,6 +58,7 @@
                 android:layout_height="wrap_content">
                 <TextView
                     android:text="FOLLOWER"
+                    android:fontFamily="@font/cookierun_regular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
                 <TextView
@@ -74,6 +77,7 @@
                 android:layout_height="wrap_content">
                 <TextView
                     android:text="FOLLOWING"
+                    android:fontFamily="@font/cookierun_regular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
                 <TextView

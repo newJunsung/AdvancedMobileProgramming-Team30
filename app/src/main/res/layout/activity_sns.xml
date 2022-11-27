@@ -25,6 +25,7 @@
                 android:id="@+id/toolbar_user_id"
                 android:text="USER ID"
                 android:textSize="16sp"
+                android:fontFamily="@font/cookierun_regular"
                 android:gravity="center"
                 android:layout_toEndOf="@id/toolbar_back_button"
                 android:layout_width="wrap_content"

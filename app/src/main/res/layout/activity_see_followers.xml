@@ -18,6 +18,7 @@
             android:background="@drawable/square_background_border_bottom_light_gray"
             android:paddingTop="12dp"
             android:text="팔로워"
+            android:fontFamily="@font/cookierun_bold"
             android:textAlignment="center"
             android:textSize="20sp"
             android:textStyle="bold" />
