@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@drawable/border_layout">
     <LinearLayout
         android:gravity="center_vertical"
         android:layout_width="match_parent"
@@ -24,6 +25,7 @@
         android:background="@drawable/square_background_border_top_bottom_light_gray"
         android:id="@+id/feed_timeline_imageview_content"
         android:layout_width="match_parent"
+        android:layout_margin="8dp"
         android:layout_height="250dp"/>
     <LinearLayout
         android:gravity="center_vertical"
