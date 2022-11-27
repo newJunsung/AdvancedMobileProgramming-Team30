@@ -102,10 +102,12 @@ class ProfileFragment: Fragment() {
 
         fragmentView?.user_recyclerview?.adapter = ProfileRecyclerViewAdapter()
         fragmentView?.user_recyclerview?.layoutManager = GridLayoutManager(activity, 3)
-        fragmentView?.user_profile?.setOnClickListener { // 프로필 사진을 누르면 프로필 사진을 수정 가능.
-            var photoPickerIntent = Intent(Intent.ACTION_PICK)
-            photoPickerIntent.type = "image/*"
-            activity?.startActivityForResult(photoPickerIntent, PICK_PROFILE_FROM_ALBUM)
+        if(currentUserUid == uid) {
+            fragmentView?.user_profile?.setOnClickListener { // 프로필 사진을 누르면 프로필 사진을 수정 가능.
+                var photoPickerIntent = Intent(Intent.ACTION_PICK)
+                photoPickerIntent.type = "image/*"
+                activity?.startActivityForResult(photoPickerIntent, PICK_PROFILE_FROM_ALBUM)
+            }
         }
         getProfileImage()
         getFollowerAndFollowing()
