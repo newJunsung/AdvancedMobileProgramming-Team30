@@ -116,10 +116,20 @@ class ProfileFragment: Fragment() {
 
     // 팔로우하는 기능
     fun requestFollow(){
+        var userId = FirebaseAuth.getInstance().currentUser?.email
+        Log.d("userid: ", userId.toString())
+        val data = hashMapOf(
+            "userId" to userId
+        )
+        FirebaseFirestore.getInstance().collection("users")
+            .document(currentUserUid!!)
+            .set(data)
+
         //Save data to my account
         var tsDocFollowing = firestore?.collection("users")?.document(currentUserUid!!)
         firestore?.runTransaction { transaction ->
             var followDTO = transaction.get(tsDocFollowing!!).toObject(FollowDTO::class.java)
+
             if(followDTO == null){
                 followDTO = FollowDTO()
                 followDTO!!.followingCount = 1
