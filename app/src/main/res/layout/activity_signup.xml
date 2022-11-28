@@ -63,6 +63,7 @@
         app:layout_constraintTop_toBottomOf="@+id/nameEdit" />
 
     <EditText
+        android:inputType="textVisiblePassword"
         android:id="@+id/pwSignUpEdit"
         android:layout_width="350dp"
         android:layout_height="60dp"

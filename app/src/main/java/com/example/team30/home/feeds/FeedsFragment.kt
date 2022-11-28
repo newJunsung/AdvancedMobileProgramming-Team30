@@ -97,6 +97,7 @@ class FeedsFragment: Fragment() {
                 .into(viewholder.findViewById(R.id.feed_timeline_imageview_content))
 
             // Explain of content
+            viewholder.findViewById<TextView>(R.id.feed_timeline_title_textview).text = postDTOs!![position].title
             viewholder.findViewById<TextView>(R.id.feed_timeline_description_textview).text = postDTOs!![position].description
 
             // likes
