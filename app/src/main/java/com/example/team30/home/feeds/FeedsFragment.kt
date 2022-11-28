@@ -87,7 +87,7 @@ class FeedsFragment: Fragment() {
             var viewholder = (holder as CustomViewHolder).itemView
 
             // UserId
-            viewholder.findViewById<TextView>(R.id.feed_timeline_profile_textview).text = postDTOs[position].userId
+            viewholder.findViewById<TextView>(R.id.feed_timeline_profile_textview).text = "(${postDTOs[position].userId})"
 
             // name
             //viewholder.findViewById<TextView>()
@@ -110,8 +110,12 @@ class FeedsFragment: Fragment() {
                 .document(postDTOs[position].uid!!).get()
             instance.addOnCompleteListener {
                 if(it.isSuccessful) {
+                    // 프로필 사진을 불러올 수 있다면, 이메일과 닉네임도 동시에 표시가 가능함. profileImages에 name과 email이 있기 때문...
                     Glide.with(holder.itemView.context).load(it.result["image"])
                         .into(viewholder.findViewById((R.id.feed_timeline_profile_image)))
+                    var str = viewholder.findViewById<TextView>(R.id.feed_timeline_profile_textview).text.toString()
+                    str = it.result["name"].toString() + str
+                    viewholder.findViewById<TextView>(R.id.feed_timeline_profile_textview).text = str
                 }
             }
 
