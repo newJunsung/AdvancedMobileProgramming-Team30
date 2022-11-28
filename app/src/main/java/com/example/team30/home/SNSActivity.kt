@@ -135,7 +135,8 @@ class SNSActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListene
                 var map = HashMap<String, Any>()
                 map["image"] = it.toString()
 
-
+                // 해쉬맵에 Image uri만 설정했을 경우, 기존 name과 email 필드가 사라져서,
+                // 파이어베이스에서 name email 필드를 불러와서 그 값을 map에 함께 넣어서 set하도록 함.
                 FirebaseFirestore.getInstance().collection("profileImages").document(uid!!).get().addOnCompleteListener {
                     name = it.result!!["name"].toString()
                     email = it.result!!["email"].toString()
