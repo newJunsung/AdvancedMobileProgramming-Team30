@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -128,9 +129,21 @@ class SNSActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListene
             storageRef.putFile(imageUri!!).continueWithTask { task: Task<UploadTask.TaskSnapshot> ->
                 return@continueWithTask storageRef.downloadUrl
             }.addOnSuccessListener {
+                var name = "null"
+                var email = "null"
+
                 var map = HashMap<String, Any>()
                 map["image"] = it.toString()
-                FirebaseFirestore.getInstance().collection("profileImages").document(uid).set(map)
+
+
+                FirebaseFirestore.getInstance().collection("profileImages").document(uid!!).get().addOnCompleteListener {
+                    name = it.result!!["name"].toString()
+                    email = it.result!!["email"].toString()
+                    Log.d("name, email >>> ", "$name, $email")
+                    map["name"] = name
+                    map["email"] = email
+                    FirebaseFirestore.getInstance().collection("profileImages").document(uid).set(map)
+                }
             }
         }
     }
