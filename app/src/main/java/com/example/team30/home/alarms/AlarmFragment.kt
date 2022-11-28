@@ -55,20 +55,27 @@ class AlarmFragment : Fragment() {
         var alarmDTOList: ArrayList<AlarmDTO> = arrayListOf()
 
         init {
+            Log.d(TAG, uid.toString())
             firestore
                 ?.collection("alarms")
-                ?.orderBy("timestamp", Query.Direction.DESCENDING)
                 ?.whereEqualTo("destinationUid", uid) // 나에게 도착한 메시지만 필터링
+//                ?.orderBy("timestamp", Query.Direction.DESCENDING)
                 ?.addSnapshotListener { querySnapshot, firebaseFirestoreException ->
-//                    alarmDTOList.clear()
+                    alarmDTOList.clear()
                     if (querySnapshot == null) return@addSnapshotListener
                     for (snapshot in querySnapshot!!.documents) {
                         alarmDTOList.add(snapshot.toObject(AlarmDTO::class.java)!!)
-                        //Log.d("alarmDTOList : ", alarmDTOList[0].toString())
+                        Log.d(TAG, alarmDTOList[0].toString())
                     }
+
+                    // 위의 orderBy로 정렬했을 때 정렬이 안되고 항상 null이 반환되는 문제 발생
+                    // alarmDTOList를 timestamp 기준으로 sorting 후 데이터 적용 후 해결
+                    alarmDTOList.sortBy { it.timestamp }
+                    alarmDTOList.reverse()
                     notifyDataSetChanged()
                 }
         }
+
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
             var view = LayoutInflater.from(parent.context).inflate(R.layout.item_follow, parent, false)
             return CustomerViewHolder(view)
